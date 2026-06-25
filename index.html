@@ -1,152 +1,382 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Monochromatic Coder</title>
+    <title>Shadow Blogs - Pro AI Version</title>
     <style>
-        /* Reset and Base Styles */
+        /* CSS Reset & Cyber Dark Theme */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', Courier, monospace; /* Tech vibe font */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
+        :root {
+            --bg-main: #0a0a0a;
+            --bg-card: #141414;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #262626;
+            --accent: #ffffff;
+        }
+
         body {
-            background-color: #000000;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-
-        /* Unique Header */
-        header {
-            padding: 60px 20px;
-            text-align: center;
-            border-bottom: 3px solid #ffffff;
-            background: #000000;
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            font-weight: 900;
-        }
-
-        p.subtitle {
-            font-size: 1.2rem;
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Split-Grid Layout */
-        .blog-container {
-            display: flex;
-            flex-wrap: wrap;
-            width: 100vw;
-        }
-
-        .blog-post {
-            width: 50%;
-            padding: 60px 40px;
-            border-bottom: 3px solid #ffffff;
-            border-right: 3px solid #ffffff;
-            transition: all 0.5s ease;
-            cursor: pointer;
-            background-color: #000000;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Creating the Checkerboard Effect */
-        .blog-post:nth-child(even) {
-            background-color: #ffffff;
-            color: #000000;
-            border-right: none;
-        }
-
-        /* Hover Invert Effects */
-        .blog-post:hover {
-            background-color: #ffffff;
-            color: #000000;
-            transform: scale(0.97);
-            box-shadow: inset 0 0 0 5px #000000;
-        }
-
-        .blog-post:nth-child(even):hover {
-            background-color: #000000;
-            color: #ffffff;
-            box-shadow: inset 0 0 0 5px #ffffff;
-        }
-
-        /* Typography inside Posts */
-        .post-tag {
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-decoration: underline;
-        }
-
-        h2 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        p.excerpt {
-            font-size: 1.1rem;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
             line-height: 1.6;
         }
 
-        /* Mobile View Adjustment */
-        @media (max-width: 768px) {
-            .blog-post {
-                width: 100%;
-                border-right: none;
-                padding: 40px 20px;
-            }
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 1.8rem; }
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .add-post-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Settings */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: #111;
+            border-left: 1px solid var(--border-color);
+            z-index: 200;
+            padding: 40px 20px;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar.open { right: 0; }
+        .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; float: right; }
+        .sidebar h3 { margin-top: 40px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .setting-opt {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px;
+            width: 100%;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .setting-opt:hover { background: #fff; color: #000; }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+
+        /* Blog Card Layout */
+        .blog-post {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .blog-post:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: translateY(-3px);
+        }
+
+        .post-meta { font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 10px; }
+        .blog-post:hover .post-meta { color: #555; }
+        .blog-post h2 { margin-bottom: 15px; }
+        
+        .delete-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: none;
+        }
+        .blog-post:hover .delete-btn { display: block; }
+
+        /* High-Tech Ad Slots (விளம்பர இடம்) */
+        .ad-slot {
+            background: repeating-linear-gradient(45deg, #111, #111 10px, #161616 10px, #161616 20px);
+            border: 1px dashed #444;
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Form Styling (டெய்லி பிளாக் போஸ்ட் போடும் இடம்) */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .form-group textarea { height: 200px; resize: vertical; }
+        .submit-btn {
+            background: #fff;
+            color: #000;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Full Article View */
+        .back-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: inherit;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+        .back-btn:hover { background: #fff; color: #000; }
+        .full-article-content { background: var(--bg-card); border: 1px solid var(--border-color); padding: 40px; border-radius: 12px; }
+        .full-article-content h1 { margin-bottom: 20px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Raw Space</h1>
-        <p class="subtitle">Focus. Build. Execute.</p>
-    </header>
+    <nav>
+        <div class="logo" onclick="showPage('home')">SHADOW BLOGS</div>
+        <div class="nav-right">
+            <button class="add-post-btn" onclick="showPage('create-page')">+ New Post</button>
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        </div>
+    </nav>
 
-    <main class="blog-container">
-        <article class="blog-post">
-            <span class="post-tag">LIFE & TECH // 01</span>
-            <h2>Life After 12th: The Tech Journey</h2>
-            <p class="excerpt">School mudinchadhum adutha step enna? Exploring the raw world of code, digital creation, and setting up the foundation for the future...</p>
-        </article>
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" onclick="toggleSidebar()">✕</button>
+        <h3>Settings</h3>
+        <button class="setting-opt" onclick="changeTheme()">Invert Theme</button>
+        <button class="setting-opt" onclick="showPage('home'); toggleSidebar();">Home</button>
+    </div>
 
-        <article class="blog-post">
-            <span class="post-tag">GOALS // 02</span>
-            <h2>Hitting the 50 LB Target</h2>
-            <p class="excerpt">Setting goals is easy, but hitting that exact target needs a strict daily schedule session and unshakeable focus. Here is the blueprint...</p>
-        </article>
+    <div class="container">
+        
+        <div class="ad-slot">
+            Advertisement Slot (Top Banner)
+        </div>
 
-        <article class="blog-post">
-            <span class="post-tag">HARDWARE // 03</span>
-            <h2>Mobile Security & Private Files</h2>
-            <p class="excerpt">Testing the limits of a Redmi Note 9. How secure are hidden folders really, and what happens behind a black screen...</p>
-        </article>
+        <div id="home" class="page active">
+            <div id="blog-container"></div>
+        </div>
 
-        <article class="blog-post">
-            <span class="post-tag">NETWORK // 04</span>
-            <h2>Elite Tech Mentorship</h2>
-            <p class="excerpt">Why having the right mentor changes the game. Breaking down the core benefits of high-level tech circles...</p>
-        </article>
-    </main>
+        <div id="create-page" class="page">
+            <button class="back-btn" onclick="showPage('home')">← Cancel</button>
+            <h2 style="margin-bottom: 20px;">புதிய கட்டுரை எழுதவும்</h2>
+            <form id="blog-form" onsubmit="savePost(event)">
+                <div class="form-group">
+                    <label>கட்டுரை தலைப்பு (Title)</label>
+                    <input type="text" id="post-title" required placeholder="உதாரணம்: Life After 12th">
+                </div>
+                <div class="form-group">
+                    <label>பிரிவு (Category)</label>
+                    <input type="text" id="post-category" required placeholder="உதாரணம்: Tech, Security, Fitness">
+                </div>
+                <div class="form-group">
+                    <label>விவரம் (Content)</label>
+                    <textarea id="post-content" required placeholder="உங்கள் கட்டுரையை இங்கே விரிவாக எழுதவும்..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Publish Post</button>
+            </form>
+        </div>
 
+        <div id="article-view" class="page">
+            <button class="back-btn" onclick="showPage('home')">← Back to Home</button>
+            <div class="full-article-content">
+                <span id="view-meta" style="font-size: 0.9rem; color: var(--text-secondary);"></span>
+                <h1 id="view-title" style="margin-top: 10px;"></h1>
+                <p id="view-body" style="white-space: pre-wrap; margin-top: 20px;"></p>
+            </div>
+            
+            <div class="ad-slot">
+                Advertisement Slot (Article Bottom)
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ஆரம்பகால இயல்புநிலை கட்டுரைகள் (Default Posts)
+        const defaultPosts = [
+            { id: 1, title: "Life After 12th: அடுத்த கட்டப் பயணம்", category: "Education", date: "June 25, 2026", content: "பள்ளிப் படிப்பு முடிந்தவுடன் மாணவர்கள் என்ன செய்ய வேண்டும்? டேட்டா சயின்ஸ், ஏஐ (AI), சைபர் செக்யூரிட்டி போன்ற உயர்தர தொழில்நுட்பப் படிப்புகளுக்கு மிகப்பெரிய வரவேற்பு இருக்கிறது." },
+            { id: 2, title: "Mobile Security & Private Files", category: "Security", date: "June 24, 2026", content: "ஸ்மார்ட்போன்களில் உங்களது முக்கியமான ஃபைல்கள் மற்றும் தனிப்பட்ட தரவுகளை ஹேக்கர்களிடம் இருந்து எப்படி 100% பாதுகாப்பாக வைப்பது? டூ-ஃபேக்டர் ஆதென்டிகேஷனை ஆன் செய்யவும்." }
+        ];
+
+        // LocalStorage இல் இருந்து தரவை எடுக்க அல்லது சேமிக்க
+        let posts = JSON.parse(localStorage.getItem('shadow_blogs_posts'));
+        if (!posts) {
+            posts = defaultPosts;
+            localStorage.setItem('shadow_blogs_posts', JSON.stringify(posts));
+        }
+
+        // பக்கங்களை மாற்ற
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(pageId === 'home') renderPosts();
+            window.scrollTo(0,0);
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        // முகப்பு பக்கத்தில் கட்டுரைகளை காட்ட
+        function renderPosts() {
+            const container = document.getElementById('blog-container');
+            container.innerHTML = '';
+            
+            if(posts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:gray;">கட்டுரைகள் எதுவும் இல்லை. புதிய போஸ்ட் உருவாக்கவும்!</p>';
+                return;
+            }
+
+            posts.forEach(post => {
+                const div = document.createElement('div');
+                div.className = 'blog-post';
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="deletePost(event, ${post.id})">Delete</button>
+                    <div class="post-meta">${post.category} • ${post.date}</div>
+                    <h2>${post.title}</h2>
+                    <p>${post.content.substring(0, 120)}...</p>
+                    <span style="display:inline-block; margin-top:15px; text-decoration:underline; font-size:0.9rem;">Read Full Article →</span>
+                `;
+                div.onclick = () => openArticle(post);
+                container.appendChild(div);
+            });
+        }
+
+        // புதிய போஸ்ட்டை சேமிக்க (Daily Add Option)
+        function savePost(e) {
+            e.preventDefault();
+            const title = document.getElementById('post-title').value;
+            const category = document.getElementById('post-category').value;
+            const content = document.getElementById('post-content').value;
+            const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            const newPost = { id: Date.now(), title, category, date, content };
+            posts.unshift(newPost); // புதிய போஸ்ட் மேலே வரும்
+            localStorage.setItem('shadow_blogs_posts', JSON.stringify(posts));
+
+            document.getElementById('blog-form').reset();
+            showPage('home');
+        }
+
+        // போஸ்ட்டை டெலீட் செய்ய
+        function deletePost(e, id) {
+            e.stopPropagation(); // கார்டு கிளிக்கை தடுக்க
+            if(confirm('இந்த கட்டுரையை நீக்கவா?')) {
+                posts = posts.filter(p => p.id !== id);
+                localStorage.setItem('shadow_blogs_posts', JSON.stringify(posts));
+                renderPosts();
+            }
+        }
+
+        // முழு கட்டுரையை படிக்க
+        function openArticle(post) {
+            document.getElementById('view-title').innerText = post.title;
+            document.getElementById('view-meta').innerText = `${post.category} • ${post.date}`;
+            document.getElementById('view-body').innerText = post.content;
+            showPage('article-view');
+        }
+
+        // தீம் மாற்ற (Invert Colors)
+        let isLight = false;
+        function changeTheme() {
+            const root = document.documentElement;
+            if (!isLight) {
+                root.style.setProperty('--bg-main', '#ffffff');
+                root.style.setProperty('--bg-card', '#f5f5f5');
+                root.style.setProperty('--text-primary', '#000000');
+                root.style.setProperty('--text-secondary', '#555555');
+                root.style.setProperty('--border-color', '#dddddd');
+            } else {
+                root.style.setProperty('--bg-main', '#0a0a0a');
+                root.style.setProperty('--bg-card', '#141414');
+                root.style.setProperty('--text-primary', '#ffffff');
+                root.style.setProperty('--text-secondary', '#a0a0a0');
+                root.style.setProperty('--border-color', '#262626');
+            }
+            isLight = !isLight;
+        }
+
+        // முதலில் ஹோம் போஸ்ட்களை லோட் செய்ய
+        renderPosts();
+    </script>
 </body>
-  </html>
-  
+</html>
+
+            
