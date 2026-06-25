@@ -12,7 +12,7 @@
             --accent-color: #ffffff;
             --neon-glow: 0 0 12px rgba(255, 255, 255, 0.75), 0 0 25px rgba(255, 255, 255, 0.3);
             --text-color: #ffffff;
-            --text-muted: #8e8e93; /* iOS Muted Gray */
+            --text-muted: #8e8e93;
         }
         
         body {
@@ -24,12 +24,14 @@
             overflow-x: hidden;
             min-height: 100vh;
             position: relative;
+            /* Disable default mobile tap highlight to show our custom liquid effect clearly */
+            -webkit-tap-highlight-color: transparent; 
         }
 
         /* 3D Intro Splash Screen */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #000; z-index: 999;
+            background: #000; z-index: 99999;
             display: flex; justify-content: center; align-items: center;
             perspective: 1000px;
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
@@ -56,21 +58,20 @@
         }
         @keyframes fillLine { to { width: 150px; } }
 
-        /* iPhone iOS Liquid Touch Ripple Effect */
+        /* Advanced iOS 27 Liquid Touch Ripple Effect */
         .ios-liquid-ripple {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 70%, rgba(255,255,255,0) 100%);
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
             pointer-events: none;
             transform: scale(0);
-            animation: ios-fluid-expand 0.5s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
-            backdrop-filter: blur(4px);
-            mix-blend-mode: screen;
+            animation: ios-fluid-expand 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            z-index: 9999; /* Ensures it stays on top of everything */
         }
         @keyframes ios-fluid-expand {
-            0% { transform: scale(0); opacity: 0.9; }
-            40% { opacity: 0.6; filter: blur(2px); }
-            100% { transform: scale(3.5); opacity: 0; filter: blur(8px); }
+            0% { transform: scale(0); opacity: 1; }
+            50% { filter: blur(2px); opacity: 0.7; }
+            100% { transform: scale(4); opacity: 0; filter: blur(6px); }
         }
 
         /* Navbar */
@@ -102,7 +103,7 @@
         #sidebar ul li a { color: white; text-decoration: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         #sidebar ul li a:hover { color: var(--accent-color); text-shadow: var(--neon-glow); padding-left: 8px; }
         .close-btn { font-size: 30px; cursor: pointer; color: white; text-align: right; display: block; transition: 0.3s; }
-        .close-btn:hover { color: #ff453a; } /* iOS Red */
+        .close-btn:hover { color: #ff453a; }
 
         /* Categories inside Sidebar */
         .sidebar-section-title {
@@ -135,7 +136,6 @@
             gap: 35px; padding: 40px 50px;
         }
         
-        /* Cards are perfectly straight (Flat) by default */
         .card {
             background: var(--surface-color); border-radius: 14px; padding: 28px;
             border: 1px solid rgba(255,255,255,0.04);
@@ -145,7 +145,6 @@
             display: flex; flex-direction: column;
             position: relative; overflow: hidden;
         }
-        /* Soft 3D lift effect on hover while remaining upright */
         .card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 40px rgba(255, 255, 255, 0.05);
@@ -182,12 +181,13 @@
         .btn-submit { background: #fff; color: #000; padding: 16px; border: none; font-weight: bold; cursor: pointer; width: 100%; border-radius: 8px; font-size: 18px; transition: 0.25s; }
         .btn-submit:hover { box-shadow: var(--neon-glow); transform: translateY(-2px); }
 
-        /* AdSense Dynamic Slot Placeholder */
+        /* AdSense Dynamic Slot */
         .ad-slot { margin: 40px auto; max-width: 728px; height: 90px; background: #090909; border: 1px dashed #222; display: flex; align-items: center; justify-content: center; color: #444; font-size: 13px; border-radius: 8px; letter-spacing: 1px; }
         
         @media(max-width: 768px) {
             .blog-grid { padding: 20px; grid-template-columns: 1fr; }
             header { padding: 15px 20px; }
+            .article-view { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -251,13 +251,20 @@
     </div>
 
     <script>
-        // Storage Keys Initialization 
         let posts = JSON.parse(localStorage.getItem('shadow_blogs_v2')) || [];
-        // Top 5 Globally Common Filter Categories
-        const categories = ["All", "Tech", "Lifestyle", "Food", "Travel", "Business"];
+        
+        // Category list with accurate Emoji Icons
+        const categoryData = [
+            { name: "All", icon: "🌐" },
+            { name: "Tech", icon: "💻" },
+            { name: "Lifestyle", icon: "🛋️" },
+            { name: "Food", icon: "🍽️" },
+            { name: "Travel", icon: "✈️" },
+            { name: "Business", icon: "💼" }
+        ];
         let currentFilter = "All";
 
-        // Handle Intro Display Closure
+        // Intro screen timeout
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const intro = document.getElementById('intro-overlay');
@@ -266,29 +273,27 @@
             }, 1600);
         });
 
-        // iPhone iOS Liquid Fluid Touch Engine
-        document.addEventListener('click', (e) => {
-            // Dismiss active execution on structural data insertion forms
-            if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        // Advanced PointerDown Event for Flawless iOS Mobile & Desktop Liquid Touch
+        document.addEventListener('pointerdown', (e) => {
+            // Do not run effect on buttons, inputs, or textareas
+            if(['TEXTAREA', 'INPUT', 'SELECT', 'BUTTON'].includes(e.target.tagName)) return;
+            if(e.target.closest('button')) return;
 
             const ripple = document.createElement('div');
             ripple.className = 'ios-liquid-ripple';
             
-            // Initial iOS Drop Circle Layout dimensions
-            const size = 45;
+            const size = 60; // Increased size slightly for better visibility
             ripple.style.width = `${size}px`;
             ripple.style.height = `${size}px`;
             
-            // Positioning coordinates maps perfectly to tap target location
             ripple.style.left = `${e.pageX - size/2}px`;
             ripple.style.top = `${e.pageY - size/2}px`;
             
             document.body.appendChild(ripple);
             
-            // Fluid Garbage collection
             setTimeout(() => {
                 ripple.remove();
-            }, 500);
+            }, 600);
         });
 
         function toggleMenu() {
@@ -307,7 +312,7 @@
             switchView('home-view');
         }
 
-        // Gatekeeping Protected Admin System
+        // Admin Security
         function promptAdmin() {
             const pin = prompt("Enter Admin PIN:");
             if(pin === "shadow") {
@@ -321,26 +326,25 @@
 
         function setupAdminSelect() {
             const select = document.getElementById('post-category');
-            const writableCats = categories.filter(c => c !== "All");
-            select.innerHTML = writableCats.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            const writableCats = categoryData.filter(c => c.name !== "All");
+            select.innerHTML = writableCats.map(cat => `<option value="${cat.name}">${cat.icon} ${cat.name}</option>`).join('');
         }
 
-        // Sidebar Navigation Category Logic
+        // Render Filters with Icons
         function renderFilters() {
             const container = document.getElementById('filter-container');
-            container.innerHTML = categories.map(cat => 
-                `<button class="sidebar-filter-btn ${currentFilter === cat ? 'active' : ''}" onclick="setFilter('${cat}')">⚪ ${cat}</button>`
+            container.innerHTML = categoryData.map(cat => 
+                `<button class="sidebar-filter-btn ${currentFilter === cat.name ? 'active' : ''}" onclick="setFilter('${cat.name}')">${cat.icon} ${cat.name}</button>`
             ).join('');
         }
 
-        function setFilter(cat) {
-            currentFilter = cat;
+        function setFilter(catName) {
+            currentFilter = catName;
             renderFilters();
             renderPosts();
             toggleMenu(); 
         }
 
-        // Render Straight Grid Cards Execution Loop
         function renderPosts() {
             const grid = document.getElementById('blog-grid');
             grid.innerHTML = '';
@@ -365,7 +369,6 @@
             });
         }
 
-        // Reader Engine Controller
         function readArticle(id) {
             const post = posts.find(p => p.id === id);
             if(post) {
@@ -375,7 +378,6 @@
             }
         }
 
-        // Admin Posting System Execution
         function addPost() {
             const title = document.getElementById('post-title').value.trim();
             const category = document.getElementById('post-category').value;
@@ -414,9 +416,7 @@
             ).join('');
         }
 
-        // Initialize Core Engine Execution
         goHome();
     </script>
 </body>
-  </html>
-  
+</html>
