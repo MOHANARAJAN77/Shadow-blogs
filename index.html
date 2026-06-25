@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Monochromatic Coder</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace; /* Tech vibe font */
+        }
+        
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Unique Header */
+        header {
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 3px solid #ffffff;
+            background: #000000;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Split-Grid Layout */
+        .blog-container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100vw;
+        }
+
+        .blog-post {
+            width: 50%;
+            padding: 60px 40px;
+            border-bottom: 3px solid #ffffff;
+            border-right: 3px solid #ffffff;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Creating the Checkerboard Effect */
+        .blog-post:nth-child(even) {
+            background-color: #ffffff;
+            color: #000000;
+            border-right: none;
+        }
+
+        /* Hover Invert Effects */
+        .blog-post:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: scale(0.97);
+            box-shadow: inset 0 0 0 5px #000000;
+        }
+
+        .blog-post:nth-child(even):hover {
+            background-color: #000000;
+            color: #ffffff;
+            box-shadow: inset 0 0 0 5px #ffffff;
+        }
+
+        /* Typography inside Posts */
+        .post-tag {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-decoration: underline;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        p.excerpt {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Mobile View Adjustment */
+        @media (max-width: 768px) {
+            .blog-post {
+                width: 100%;
+                border-right: none;
+                padding: 40px 20px;
+            }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Raw Space</h1>
+        <p class="subtitle">Focus. Build. Execute.</p>
+    </header>
+
+    <main class="blog-container">
+        <article class="blog-post">
+            <span class="post-tag">LIFE & TECH // 01</span>
+            <h2>Life After 12th: The Tech Journey</h2>
+            <p class="excerpt">School mudinchadhum adutha step enna? Exploring the raw world of code, digital creation, and setting up the foundation for the future...</p>
+        </article>
+
+        <article class="blog-post">
+            <span class="post-tag">GOALS // 02</span>
+            <h2>Hitting the 50 LB Target</h2>
+            <p class="excerpt">Setting goals is easy, but hitting that exact target needs a strict daily schedule session and unshakeable focus. Here is the blueprint...</p>
+        </article>
+
+        <article class="blog-post">
+            <span class="post-tag">HARDWARE // 03</span>
+            <h2>Mobile Security & Private Files</h2>
+            <p class="excerpt">Testing the limits of a Redmi Note 9. How secure are hidden folders really, and what happens behind a black screen...</p>
+        </article>
+
+        <article class="blog-post">
+            <span class="post-tag">NETWORK // 04</span>
+            <h2>Elite Tech Mentorship</h2>
+            <p class="excerpt">Why having the right mentor changes the game. Breaking down the core benefits of high-level tech circles...</p>
+        </article>
+    </main>
+
+</body>
+  </html>
+  
