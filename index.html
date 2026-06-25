@@ -1,130 +1,190 @@
-                <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHADOW BLOGS</title>
     <style>
-        /* 3D Tech Theme CSS */
+        /* High-Tech White Neon Theme & Flat 3D Grid CSS */
         :root {
             --bg-color: #030303;
-            --surface-color: rgba(20, 20, 20, 0.8);
-            --accent-color: #00ffcc;
+            --surface-color: rgba(18, 18, 18, 0.85);
+            --accent-color: #ffffff;
+            --neon-glow: 0 0 12px rgba(255, 255, 255, 0.75), 0 0 25px rgba(255, 255, 255, 0.3);
             --text-color: #ffffff;
-            --text-muted: #a0a0a0;
+            --text-muted: #8e8e93; /* iOS Muted Gray */
         }
         
         body {
             margin: 0; padding: 0;
             background-color: var(--bg-color);
-            background-image: radial-gradient(circle at top, #111 0%, #000 100%);
+            background-image: radial-gradient(circle at center, #111 0%, #000 100%);
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
             min-height: 100vh;
+            position: relative;
+        }
+
+        /* 3D Intro Splash Screen */
+        #intro-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: #000; z-index: 999;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 1000px;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+        .intro-box {
+            text-align: center;
+            transform: rotateX(15deg) rotateY(-5deg);
+            animation: introReveal 2s ease-in-out forwards;
+        }
+        .intro-title {
+            font-size: 54px; font-weight: 900; letter-spacing: 10px;
+            color: #fff; text-shadow: var(--neon-glow);
+            margin-bottom: 15px;
+        }
+        .intro-line {
+            width: 0; height: 2px; background: #fff; margin: 0 auto;
+            box-shadow: var(--neon-glow);
+            animation: fillLine 1.2s ease forwards;
+        }
+        @keyframes introReveal {
+            0% { transform: scale(0.9) rotateX(15deg); opacity: 0; }
+            50% { transform: scale(1.05) rotateX(0deg); opacity: 1; }
+            100% { transform: scale(1) translateY(-20px); opacity: 0; }
+        }
+        @keyframes fillLine { to { width: 150px; } }
+
+        /* iPhone iOS Liquid Touch Ripple Effect */
+        .ios-liquid-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 70%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            transform: scale(0);
+            animation: ios-fluid-expand 0.5s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+            backdrop-filter: blur(4px);
+            mix-blend-mode: screen;
+        }
+        @keyframes ios-fluid-expand {
+            0% { transform: scale(0); opacity: 0.9; }
+            40% { opacity: 0.6; filter: blur(2px); }
+            100% { transform: scale(3.5); opacity: 0; filter: blur(8px); }
         }
 
         /* Navbar */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px; background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 20px 40px; background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             position: sticky; top: 0; z-index: 100;
         }
         .logo { 
-            font-size: 26px; font-weight: 900; letter-spacing: 3px; 
-            text-shadow: 0 0 15px var(--accent-color); 
-            color: #fff;
+            font-size: 26px; font-weight: 900; letter-spacing: 4px; 
+            text-shadow: var(--neon-glow); color: #fff;
         }
         .menu-btn { font-size: 30px; cursor: pointer; background: none; border: none; color: white; transition: 0.3s; }
-        .menu-btn:hover { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); }
+        .menu-btn:hover { color: var(--accent-color); text-shadow: var(--neon-glow); }
         
         /* Sidebar Menu */
         #sidebar {
-            position: fixed; top: 0; right: -300px; width: 250px; height: 100vh;
-            background: #0a0a0a; border-left: 1px solid var(--accent-color);
-            transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            z-index: 200; padding: 25px;
-            box-shadow: -10px 0 30px rgba(0,255,204,0.1);
+            position: fixed; top: 0; right: -320px; width: 280px; height: 100vh;
+            background: #090909; border-left: 1px solid rgba(255,255,255,0.1);
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 200; padding: 25px; box-sizing: border-box;
+            box-shadow: -15px 0 40px rgba(0,0,0,0.8);
         }
         #sidebar.open { right: 0; }
-        #sidebar ul { list-style: none; padding: 0; margin-top: 40px; }
-        #sidebar ul li { margin: 25px 0; }
+        #sidebar ul { list-style: none; padding: 0; margin-top: 30px; }
+        #sidebar ul li { margin: 20px 0; }
         #sidebar ul li a { color: white; text-decoration: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        #sidebar ul li a:hover { color: var(--accent-color); padding-left: 10px; }
+        #sidebar ul li a:hover { color: var(--accent-color); text-shadow: var(--neon-glow); padding-left: 8px; }
         .close-btn { font-size: 30px; cursor: pointer; color: white; text-align: right; display: block; transition: 0.3s; }
-        .close-btn:hover { color: red; }
+        .close-btn:hover { color: #ff453a; } /* iOS Red */
 
-        /* Filters */
-        .filters { display: flex; gap: 15px; padding: 30px 20px; justify-content: center; flex-wrap: wrap; }
-        .filter-btn {
-            background: #151515; color: white; border: 1px solid #333; padding: 10px 25px;
-            border-radius: 30px; cursor: pointer; transition: all 0.3s ease;
-            font-weight: bold; letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        /* Categories inside Sidebar */
+        .sidebar-section-title {
+            font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+            color: #666; margin-top: 40px; margin-bottom: 15px;
+            border-bottom: 1px solid #222; padding-bottom: 5px; font-weight: bold;
         }
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--accent-color); color: #000; 
-            box-shadow: 0 0 15px var(--accent-color);
-            transform: translateY(-3px); border-color: var(--accent-color);
+        .sidebar-filter-btn {
+            display: block; width: 100%; text-align: left; background: none;
+            border: none; color: #aaa; padding: 12px 8px; font-size: 16px;
+            cursor: pointer; transition: 0.25s; border-radius: 6px; margin-bottom: 5px;
+        }
+        .sidebar-filter-btn:hover, .sidebar-filter-btn.active {
+            color: #fff; font-weight: bold; padding-left: 15px;
+            background: rgba(255,255,255,0.08); text-shadow: var(--neon-glow);
         }
 
-        /* Grid & 3D Cards */
+        /* Main Screen Container */
+        .main-container {
+            animation: pageReveal 1s cubic-bezier(0.2, 1, 0.2, 1) forwards;
+            opacity: 0; transform: translateY(15px);
+        }
+        @keyframes pageReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Perfectly Flat 3D Grid & Cards */
         .blog-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 35px; padding: 20px 50px 50px 50px;
-            perspective: 1000px;
+            gap: 35px; padding: 40px 50px;
         }
         
+        /* Cards are perfectly straight (Flat) by default */
         .card {
-            background: var(--surface-color); border-radius: 15px; padding: 25px;
-            border: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
-            transform-style: preserve-3d;
+            background: var(--surface-color); border-radius: 14px; padding: 28px;
+            border: 1px solid rgba(255,255,255,0.04);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
             display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
         }
+        /* Soft 3D lift effect on hover while remaining upright */
         .card:hover {
-            transform: translateY(-15px) rotateX(5deg) rotateY(2deg);
-            box-shadow: 0 20px 40px rgba(0, 255, 204, 0.15);
-            border-color: rgba(0, 255, 204, 0.5);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.35);
         }
-        .card h2 { margin-top: 10px; font-size: 24px; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
-        .card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; flex-grow: 1; }
-        .card .category { align-self: flex-start; background: #222; color: var(--accent-color); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid #333; }
+        .card h2 { margin-top: 15px; font-size: 24px; color: #fff; font-weight: 600; line-height: 1.3; }
+        .card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; flex-grow: 1; margin-bottom: 20px; }
+        .card .category { align-self: flex-start; background: #000; color: #fff; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid #222; text-shadow: var(--neon-glow); letter-spacing: 0.5px; }
+        
         .read-more { 
-            background: transparent; border: 1px solid var(--accent-color); 
-            color: var(--accent-color); padding: 10px 20px; border-radius: 8px; 
-            cursor: pointer; transition: 0.3s; margin-top: 20px; font-weight: bold; align-self: flex-start;
+            background: transparent; border: 1px solid rgba(255,255,255,0.25); 
+            color: #fff; padding: 11px 24px; border-radius: 8px; 
+            cursor: pointer; transition: 0.25s; font-weight: bold; align-self: flex-start;
+            font-size: 14px;
         }
-        .read-more:hover { background: var(--accent-color); color: #000; box-shadow: 0 0 10px var(--accent-color); }
+        .read-more:hover { background: #fff; color: #000; box-shadow: var(--neon-glow); border-color: #fff; }
 
         /* SPA Views */
-        .view { display: none; animation: fadeIn 0.6s ease; }
+        .view { display: none; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Article View */
-        .article-view { max-width: 800px; margin: 0 auto; padding: 50px 20px; background: rgba(10,10,10,0.8); border-radius: 20px; margin-top: 40px; border: 1px solid #222; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-        .article-view h1 { color: var(--accent-color); text-align: center; font-size: 36px; margin-bottom: 30px; }
-        .article-view .content { color: #ddd; font-size: 18px; line-height: 1.8; }
-        .back-btn { background: #222; color: white; border: 1px solid #444; padding: 10px 20px; cursor: pointer; border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
-        .back-btn:hover { background: var(--accent-color); color: #000; border-color: var(--accent-color); }
+        .article-view { max-width: 800px; margin: 0 auto; padding: 50px 35px; background: rgba(10,10,10,0.95); border-radius: 18px; margin-top: 40px; border: 1px solid #1c1c1e; box-shadow: 0 40px 80px rgba(0,0,0,0.9); }
+        .article-view h1 { color: #fff; text-shadow: var(--neon-glow); text-align: center; font-size: 38px; margin-bottom: 30px; font-weight: 700; }
+        .article-view .content { color: #e5e5ea; font-size: 18px; line-height: 1.85; letter-spacing: 0.3px; }
+        .back-btn { background: #1c1c1e; color: white; border: 1px solid #2c2c2e; padding: 11px 22px; cursor: pointer; border-radius: 8px; margin-bottom: 30px; transition: 0.25s; font-weight: bold; }
+        .back-btn:hover { background: #fff; color: #000; border-color: #fff; box-shadow: var(--neon-glow); }
 
-        /* Admin Section (Secured) */
-        #admin-panel { background: #111; padding: 40px; border-radius: 15px; max-width: 600px; margin: 0 auto; border: 1px solid var(--accent-color); box-shadow: 0 0 30px rgba(0,255,204,0.1); }
-        #admin-panel h2 { color: white; text-align: center; margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 20px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 16px; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-color); }
-        .btn-submit { background: var(--accent-color); color: #000; padding: 15px; border: none; font-weight: bold; cursor: pointer; width: 100%; border-radius: 8px; font-size: 18px; transition: 0.3s; }
-        .btn-submit:hover { box-shadow: 0 0 15px var(--accent-color); transform: scale(1.02); }
+        /* Admin Management Secured Section */
+        #admin-panel { background: #0a0a0c; padding: 40px; border-radius: 18px; max-width: 600px; margin: 0 auto; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 0 40px rgba(255,255,255,0.02); }
+        #admin-panel h2 { color: white; text-align: center; margin-bottom: 25px; text-shadow: var(--neon-glow); }
+        input, textarea, select { width: 100%; padding: 16px; margin-bottom: 20px; background: #141416; border: 1px solid #2c2c2e; color: white; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 16px; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #fff; box-shadow: var(--neon-glow); }
+        .btn-submit { background: #fff; color: #000; padding: 16px; border: none; font-weight: bold; cursor: pointer; width: 100%; border-radius: 8px; font-size: 18px; transition: 0.25s; }
+        .btn-submit:hover { box-shadow: var(--neon-glow); transform: translateY(-2px); }
 
-        /* AdSense Slot */
-        .ad-slot { margin: 40px auto; max-width: 728px; height: 90px; background: #111; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px; border-radius: 10px; }
+        /* AdSense Dynamic Slot Placeholder */
+        .ad-slot { margin: 40px auto; max-width: 728px; height: 90px; background: #090909; border: 1px dashed #222; display: flex; align-items: center; justify-content: center; color: #444; font-size: 13px; border-radius: 8px; letter-spacing: 1px; }
         
-        /* Responsive */
         @media(max-width: 768px) {
             .blog-grid { padding: 20px; grid-template-columns: 1fr; }
             header { padding: 15px 20px; }
@@ -132,6 +192,13 @@
     </style>
 </head>
 <body>
+
+    <div id="intro-overlay">
+        <div class="intro-box">
+            <div class="intro-title">SHADOW</div>
+            <div class="intro-line"></div>
+        </div>
+    </div>
 
     <header>
         <div class="logo">SHADOW BLOGS</div>
@@ -144,52 +211,85 @@
             <li><a onclick="goHome(); toggleMenu()">🏠 Home</a></li>
             <li><a onclick="promptAdmin(); toggleMenu()">⚙️ Admin Access</a></li>
         </ul>
+        
+        <div class="sidebar-section-title">Categories</div>
+        <div id="filter-container"></div>
     </div>
 
-    <div id="home-view" class="view active">
-        <div class="filters" id="filter-container"></div>
-        <div class="ad-slot">Google AdSense Placeholder (728x90)</div>
-        <div class="blog-grid" id="blog-grid"></div>
-        <div class="ad-slot">Google AdSense Placeholder (728x90)</div>
-    </div>
-
-    <div id="article-view" class="view">
-        <div class="article-view">
-            <button class="back-btn" onclick="goHome()">← Back to Home</button>
-            <h1 id="article-title"></h1>
-            <div id="article-content" class="content"></div>
+    <div class="main-container">
+        <div id="home-view" class="view active">
+            <div class="ad-slot">Google AdSense Placeholder (728x90)</div>
+            <div class="blog-grid" id="blog-grid"></div>
+            <div class="ad-slot">Google AdSense Placeholder (728x90)</div>
         </div>
-    </div>
 
-    <div id="admin-view" class="view">
-        <div class="article-view" style="background: transparent; border: none; box-shadow: none; margin-top: 0;">
-            <button class="back-btn" onclick="goHome()">← Back</button>
-            <div id="admin-panel">
-                <h2>Create New Post</h2>
-                <input type="text" id="post-title" placeholder="Enter Blog Title..." required>
-                <select id="post-category">
-                    <option value="Tech">Tech</option>
-                    <option value="CyberSecurity">CyberSecurity</option>
-                    <option value="AI">AI</option>
-                    <option value="Food">Food</option>
-                    <option value="Lifestyle">Lifestyle</option>
-                </select>
-                <textarea id="post-content" rows="10" placeholder="Write your awesome content here..." required></textarea>
-                <button class="btn-submit" onclick="addPost()">Publish to Block</button>
+        <div id="article-view" class="view">
+            <div class="article-view">
+                <button class="back-btn" onclick="goHome()">← Back to Home</button>
+                <h1 id="article-title"></h1>
+                <div id="article-content" class="content"></div>
             </div>
-            
-            <div id="admin-posts-list" style="margin-top: 50px; background: #111; padding: 20px; border-radius: 10px;">
-                <h3 style="color: white; border-bottom: 1px solid #333; padding-bottom: 10px;">Manage Your Posts</h3>
-                <ul id="manage-list" style="list-style: none; padding: 0;"></ul>
+        </div>
+
+        <div id="admin-view" class="view">
+            <div class="article-view" style="background: transparent; border: none; box-shadow: none; margin-top: 0;">
+                <button class="back-btn" onclick="goHome()">← Back</button>
+                <div id="admin-panel">
+                    <h2>Create New Post</h2>
+                    <input type="text" id="post-title" placeholder="Enter Blog Title..." required>
+                    <select id="post-category"></select>
+                    <textarea id="post-content" rows="10" placeholder="Write your awesome content here..." required></textarea>
+                    <button class="btn-submit" onclick="addPost()">Publish to Block</button>
+                </div>
+                
+                <div id="admin-posts-list" style="margin-top: 50px; background: #09090b; padding: 20px; border-radius: 12px; border: 1px solid #1c1c1e;">
+                    <h3 style="color: white; border-bottom: 1px solid #222; padding-bottom: 10px;">Manage Your Posts</h3>
+                    <ul id="manage-list" style="list-style: none; padding: 0;"></ul>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // பழைய டேட்டாவை நீக்கிவிட்டு புதிய கீ (shadow_blogs_v2) பயன்படுத்துகிறோம்.
+        // Storage Keys Initialization 
         let posts = JSON.parse(localStorage.getItem('shadow_blogs_v2')) || [];
-        const categories = ["All", "Tech", "CyberSecurity", "AI", "Food", "Lifestyle"];
+        // Top 5 Globally Common Filter Categories
+        const categories = ["All", "Tech", "Lifestyle", "Food", "Travel", "Business"];
         let currentFilter = "All";
+
+        // Handle Intro Display Closure
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const intro = document.getElementById('intro-overlay');
+                intro.style.opacity = '0';
+                intro.style.visibility = 'hidden';
+            }, 1600);
+        });
+
+        // iPhone iOS Liquid Fluid Touch Engine
+        document.addEventListener('click', (e) => {
+            // Dismiss active execution on structural data insertion forms
+            if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+            const ripple = document.createElement('div');
+            ripple.className = 'ios-liquid-ripple';
+            
+            // Initial iOS Drop Circle Layout dimensions
+            const size = 45;
+            ripple.style.width = `${size}px`;
+            ripple.style.height = `${size}px`;
+            
+            // Positioning coordinates maps perfectly to tap target location
+            ripple.style.left = `${e.pageX - size/2}px`;
+            ripple.style.top = `${e.pageY - size/2}px`;
+            
+            document.body.appendChild(ripple);
+            
+            // Fluid Garbage collection
+            setTimeout(() => {
+                ripple.remove();
+            }, 500);
+        });
 
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -207,22 +307,29 @@
             switchView('home-view');
         }
 
-        // 🛡️ Secret Admin Login
+        // Gatekeeping Protected Admin System
         function promptAdmin() {
             const pin = prompt("Enter Admin PIN:");
             if(pin === "shadow") {
+                setupAdminSelect();
                 renderAdminList();
                 switchView('admin-view');
             } else {
-                alert("Access Denied! You are not the admin.");
+                alert("Access Denied! Unauthorized Entry Attempt.");
             }
         }
 
-        // Filters UI
+        function setupAdminSelect() {
+            const select = document.getElementById('post-category');
+            const writableCats = categories.filter(c => c !== "All");
+            select.innerHTML = writableCats.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+        }
+
+        // Sidebar Navigation Category Logic
         function renderFilters() {
             const container = document.getElementById('filter-container');
             container.innerHTML = categories.map(cat => 
-                `<button class="filter-btn ${currentFilter === cat ? 'active' : ''}" onclick="setFilter('${cat}')">${cat}</button>`
+                `<button class="sidebar-filter-btn ${currentFilter === cat ? 'active' : ''}" onclick="setFilter('${cat}')">⚪ ${cat}</button>`
             ).join('');
         }
 
@@ -230,9 +337,10 @@
             currentFilter = cat;
             renderFilters();
             renderPosts();
+            toggleMenu(); 
         }
 
-        // Blog Grid UI
+        // Render Straight Grid Cards Execution Loop
         function renderPosts() {
             const grid = document.getElementById('blog-grid');
             grid.innerHTML = '';
@@ -240,7 +348,7 @@
             const filtered = currentFilter === "All" ? posts : posts.filter(p => p.category === currentFilter);
 
             if(filtered.length === 0) {
-                grid.innerHTML = `<p style="text-align:center; color:#555; width: 100%; font-size: 18px; grid-column: 1 / -1;">No blogs posted yet in this category.</p>`;
+                grid.innerHTML = `<p style="text-align:center; color:#444; width: 100%; font-size: 16px; grid-column: 1 / -1; padding-top: 60px;">No blogs found under "${currentFilter}" category.</p>`;
                 return;
             }
 
@@ -250,25 +358,24 @@
                 card.innerHTML = `
                     <span class="category">${post.category}</span>
                     <h2>${post.title}</h2>
-                    <p>${post.content.substring(0, 120)}...</p>
+                    <p>${post.content.substring(0, 130)}...</p>
                     <button class="read-more" onclick="readArticle('${post.id}')">Read More</button>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // Full Article View
+        // Reader Engine Controller
         function readArticle(id) {
             const post = posts.find(p => p.id === id);
             if(post) {
                 document.getElementById('article-title').innerText = post.title;
-                // Preserve line breaks
-                document.getElementById('article-content').innerHTML = post.content.replace(/\\n/g, '<br>');
+                document.getElementById('article-content').innerHTML = post.content.replace(/\n/g, '<br>');
                 switchView('article-view');
             }
         }
 
-        // Admin Functions
+        // Admin Posting System Execution
         function addPost() {
             const title = document.getElementById('post-title').value.trim();
             const category = document.getElementById('post-category').value;
@@ -276,21 +383,21 @@
 
             if(title && content) {
                 const newPost = { id: Date.now().toString(), title, category, content };
-                posts.unshift(newPost); // Latest post comes first
+                posts.unshift(newPost);
                 localStorage.setItem('shadow_blogs_v2', JSON.stringify(posts));
                 
                 document.getElementById('post-title').value = '';
                 document.getElementById('post-content').value = '';
                 
-                alert("Post Published Successfully!");
+                alert("Blog Post Published Successfully!");
                 renderAdminList();
             } else {
-                alert("Title and Content cannot be empty.");
+                alert("Please fill in both Title and Content fields.");
             }
         }
 
         function deletePost(id) {
-            if(confirm("Are you sure you want to delete this post?")) {
+            if(confirm("Are you sure you want to delete this article permanently?")) {
                 posts = posts.filter(p => p.id !== id);
                 localStorage.setItem('shadow_blogs_v2', JSON.stringify(posts));
                 renderAdminList();
@@ -300,15 +407,16 @@
         function renderAdminList() {
             const list = document.getElementById('manage-list');
             list.innerHTML = posts.map(post => 
-                `<li style="background: #1a1a1a; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; border: 1px solid #333;">
-                    <span style="color: #fff; font-size: 16px;"><b>${post.title}</b> <span style="color:var(--text-muted); font-size:14px;">(${post.category})</span></span>
-                    <button onclick="deletePost('${post.id}')" style="background: #ff3333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">Delete</button>
+                `<li style="background: #141416; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; border: 1px solid #2c2c2e;">
+                    <span style="color: #fff; font-size: 15px;"><b>${post.title}</b> <span style="color:var(--text-muted); font-size:13px;">(${post.category})</span></span>
+                    <button onclick="deletePost('${post.id}')" style="background: #ff453a; color: white; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition:0.2s;">Delete</button>
                 </li>`
             ).join('');
         }
 
-        // Initialize App
+        // Initialize Core Engine Execution
         goHome();
     </script>
 </body>
-</html>
+  </html>
+  
