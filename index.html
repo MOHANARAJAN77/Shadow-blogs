@@ -5,44 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shadow Blog</title>
     <style>
+        /* 1. டார்க் தீம் டிசைன் */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             padding: 0; 
-            background-color: #f4f7f6; 
+            background-color: #121212; 
+            color: #e0e0e0; 
         }
         header { 
             background-color: #1a1a1a; 
             color: #ffffff; 
-            text-align: center; 
-            padding: 20px 0; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 15px 20px; 
+            display: flex; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
-        .container { 
-            max-width: 800px; 
-            margin: 30px auto; 
-            padding: 0 20px; 
+        /* 2. மூன்று கோடு மெனு பட்டன் */
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            color: #007bff;
         }
         
-        /* அட்மின் பகுதி (Admin Panel) */
-        .admin-panel { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-            margin-bottom: 30px; 
+        .container { 
+            max-width: 900px; 
+            margin: 20px auto; 
+            padding: 0 15px; 
         }
-        .admin-panel h3 { margin-top: 0; color: #333; }
-        .admin-panel input, .admin-panel textarea { 
+
+        /* 3. சைட் பார் (Sidebar) - கேட்டகிரிகள் மற்றும் அட்மின் */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 3;
+            top: 0;
+            left: 0;
+            background-color: #1a1a1a;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #bbb;
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .sidebar a:hover { color: #007bff; background-color: #222; }
+        .sidebar .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 36px;
+            border: none;
+            background: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* 4. Google AdSense விளம்பர இடம் */
+        .adsense-space {
+            background-color: #1f1f1f;
+            border: 1px dashed #444;
+            color: #777;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* 5. அட்மின் பாஸ்வேர்ட் & போஸ்ட் போடும் இடம் */
+        .admin-section {
+            background-color: #1f1f1f;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: none; /* ஆரம்பத்தில் மறைக்கப்பட்டிருக்கும் */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .admin-section h3 { margin-top: 0; color: #007bff; }
+        .admin-section input, .admin-section textarea { 
             width: 100%; 
             padding: 12px; 
             margin: 10px 0; 
-            border: 1px solid #ddd; 
+            background-color: #2c2c2c;
+            border: 1px solid #444; 
+            color: #fff;
             border-radius: 5px; 
             box-sizing: border-box;
             font-size: 16px;
         }
-        .admin-panel button { 
+        .admin-section button { 
             background-color: #007bff; 
             color: white; 
             padding: 12px 20px; 
@@ -51,27 +123,26 @@
             cursor: pointer; 
             font-size: 16px;
             font-weight: bold;
-            transition: background 0.3s;
         }
-        .admin-panel button:hover { background-color: #0056b3; }
+        .admin-section button:hover { background-color: #0056b3; }
 
-        /* முகப்புப் பக்கம் - பிளாக் கார்டுகள் (Blog List) */
+        /* 6. முகப்புப் பக்கம் (Blog Feed) */
         .blog-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 25px; 
+            gap: 20px; 
         }
         .blog-card { 
-            background: white; 
+            background: #1f1f1f; 
             border-radius: 10px; 
             overflow: hidden; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
             cursor: pointer; 
-            transition: transform 0.3s, box-shadow 0.3s; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            border: 1px solid #2a2a2a;
         }
         .blog-card:hover { 
             transform: translateY(-5px); 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 15px rgba(0,123,255,0.2); 
         }
         .blog-card img { 
             width: 100%; 
@@ -81,72 +152,89 @@
         .blog-card h3 { 
             padding: 15px; 
             margin: 0; 
-            font-size: 1.2em; 
-            color: #222; 
+            font-size: 1.1em; 
+            color: #eee; 
         }
 
-        /* விரிவாகப் படிக்கும் பக்கம் (Detail View) */
+        /* 7. விரிவாகப் படிக்கும் பக்கம் (Detail View) */
         .detail-view { 
             display: none; /* ஆரம்பத்தில் மறைக்கப்பட்டிருக்கும் */
-            background: white; 
-            padding: 30px; 
+            background: #1f1f1f; 
+            padding: 25px; 
             border-radius: 10px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-        }
-        .detail-view img { 
-            width: 100%; 
-            max-height: 450px; 
-            object-fit: cover; 
-            border-radius: 10px; 
-        }
-        .detail-view h2 { 
-            color: #1a1a1a; 
-            margin-top: 25px; 
-            font-size: 2em;
-        }
-        .detail-view p { 
-            line-height: 1.8; 
-            color: #444; 
-            font-size: 1.1em;
-            white-space: pre-wrap; 
+            border: 1px solid #2a2a2a;
         }
         .back-btn { 
-            background-color: #f1f1f1; 
-            color: #333; 
+            background-color: #333; 
+            color: #fff; 
             padding: 10px 15px; 
-            border: 1px solid #ccc; 
+            border: none; 
             border-radius: 5px; 
             cursor: pointer; 
             margin-bottom: 20px; 
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 14px;
         }
-        .back-btn:hover { background-color: #e2e2e2; }
+        .back-btn:hover { background-color: #444; }
+        .detail-view img { 
+            width: 100%; 
+            max-height: 400px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+        }
+        .detail-view h2 { color: #007bff; margin-top: 20px; font-size: 1.8em; }
+        .detail-view p { 
+            line-height: 1.8; 
+            color: #ccc; 
+            font-size: 1.1em;
+            white-space: pre-wrap; 
+        }
     </style>
 </head>
 <body>
 
+    <div id="mySidebar" class="sidebar">
+        <button class="close-btn" onclick="closeNav()">×</button>
+        <a href="#" onclick="goHome()">🏠 Home</a>
+        <a href="#" onclick="goHome()">📰 News</a>
+        <a href="#" onclick="goHome()">🌍 World</a>
+        <a href="#" onclick="openAdminLogin()">🔒 Admin (Private)</a>
+    </div>
+
     <header>
-        <h1>Shadow Blog</h1>
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <h1 class="header-title">Shadow Blog</h1>
     </header>
 
     <div class="container">
         
-        <div id="main-page">
-            <div class="admin-panel">
-                <h3>புதிய போஸ்ட்டை உருவாக்கவும்</h3>
-                <input type="text" id="post-title" placeholder="தலைப்பு (Title)">
-                <input type="text" id="post-image" placeholder="படத்தின் லிங்க் (Image URL)">
-                <textarea id="post-content" rows="6" placeholder="முழுமையான செய்தி அல்லது கதை (Content)"></textarea>
-                <button onclick="addPost()">Post பண்ணவும்</button>
-            </div>
+        <div class="adsense-space" id="ads-section">
+            [ Google AdSense விளம்பரங்களுக்கான இடம் (Ad Script Here) ]
+        </div>
 
-            <div class="blog-grid" id="blog-list">
+        <div id="login-form" class="admin-section">
+            <h3>Admin Login</h3>
+            <p style="color:#aaa; font-size:14px;">பிளாக் போஸ்ட் செய்ய பாஸ்வேர்ட் உள்ளிடவும்</p>
+            <input type="password" id="admin-pass" placeholder="Password (ex: shadow)">
+            <button onclick="checkPassword()">Login</button>
+            <button onclick="goHome()" style="background-color:#444; margin-left:10px;">Cancel</button>
+        </div>
+
+        <div id="admin-panel" class="admin-section">
+            <h3>புதிய போஸ்ட்டை உருவாக்கவும்</h3>
+            <input type="text" id="post-title" placeholder="தலைப்பு (Title)">
+            <input type="text" id="post-image" placeholder="படத்தின் லிங்க் (Image URL)">
+            <textarea id="post-content" rows="8" placeholder="முழுமையான செய்தி அல்லது கட்டுரை..."></textarea>
+            <button onclick="addPost()">Publish Post</button>
+            <button onclick="goHome()" style="background-color:#444; margin-left:10px;">Close</button>
+        </div>
+
+        <div id="main-page">
+            <div id="blog-list" class="blog-grid">
                 </div>
         </div>
 
         <div id="detail-page" class="detail-view">
-            <button class="back-btn" onclick="goBack()">🔙 மீண்டும் முகப்புப் பக்கத்திற்கு</button>
+            <button class="back-btn" onclick="goBack()">🔙 மீண்டும் முகப்புக்கு</button>
             <img id="detail-image" src="" alt="Blog Image">
             <h2 id="detail-title"></h2>
             <p id="detail-content"></p>
@@ -155,20 +243,64 @@
     </div>
 
     <script>
-        // ஏற்கனவே உள்ள போஸ்ட்களை லோக்கல் ஸ்டோரேஜில் இருந்து எடுப்பது
+        // மெனுவை திறக்க / மூட
+        function openNav() { document.getElementById("mySidebar").style.width = "250px"; }
+        function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+
+        // அனைத்து பேனல்களையும் மறைக்கும் பொதுவான ஃபங்ஷன்
+        function hideAllSections() {
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("admin-panel").style.display = "none";
+            document.getElementById("main-page").style.display = "none";
+            document.getElementById("detail-page").style.display = "none";
+            document.getElementById("ads-section").style.display = "block"; // விளம்பரம் எப்போதும் முகப்பில் தெரிய
+        }
+
+        // முகப்புப் பக்கத்திற்குச் செல்ல (Home)
+        function goHome() {
+            closeNav();
+            hideAllSections();
+            document.getElementById("main-page").style.display = "block";
+            renderPosts();
+        }
+
+        // அட்மின் லாகின் பக்கத்தை திறக்க
+        function openAdminLogin() {
+            closeNav();
+            hideAllSections();
+            document.getElementById("ads-section").style.display = "none"; // லாகின் செய்யும் போது விளம்பரம் வேண்டாம்
+            document.getElementById("login-form").style.display = "block";
+        }
+
+        // பாஸ்வேர்ட் சரிபார்க்க (பாஸ்வேர்ட்: shadow)
+        function checkPassword() {
+            const pass = document.getElementById("admin-pass").value;
+            if (pass === "shadow") { 
+                document.getElementById("login-form").style.display = "none";
+                document.getElementById("admin-panel").style.display = "block";
+                document.getElementById("admin-pass").value = ""; // பாஸ்வேர்டை க்ளியர் செய்ய
+            } else {
+                alert("தவறான பாஸ்வேர்ட்! (Hint: shadow)");
+            }
+        }
+
+        // போஸ்ட்களை லோக்கல் ஸ்டோரேஜில் இருந்து எடுக்க
         let posts = JSON.parse(localStorage.getItem('shadow_blog_posts')) || [];
 
-        // போஸ்ட்களை முகப்புப் பக்கத்தில் காண்பிக்கும் ஃபங்ஷன்
+        // போஸ்ட்களை முகப்பில் காட்ட
         function renderPosts() {
             const blogList = document.getElementById('blog-list');
             blogList.innerHTML = '';
+            
+            if(posts.length === 0) {
+                blogList.innerHTML = '<p style="color:#777;">இன்னும் எந்தப் பதிவும் செய்யப்படவில்லை...</p>';
+                return;
+            }
 
             posts.forEach((post, index) => {
                 const card = document.createElement('div');
                 card.className = 'blog-card';
-                // போஸ்ட்டைத் தொட்டால் விரிவான பக்கத்திற்குச் செல்லும்
                 card.onclick = () => showDetail(index);
-
                 card.innerHTML = `
                     <img src="${post.image}" alt="${post.title}">
                     <h3>${post.title}</h3>
@@ -177,56 +309,50 @@
             });
         }
 
-        // புதிய போஸ்ட்டை சேர்க்கும் ஃபங்ஷன்
+        // புதிய போஸ்ட்டை சேமிக்க
         function addPost() {
             const title = document.getElementById('post-title').value;
             const image = document.getElementById('post-image').value;
             const content = document.getElementById('post-content').value;
 
-            if (title && image) {
-                // புதிய போஸ்ட்டை வரிசையில் முதலில் சேர்க்கிறது
-                posts.unshift({ title, image, content }); 
+            if (title && image && content) {
+                posts.unshift({ title, image, content }); // முதலில் சேர்க்க
                 localStorage.setItem('shadow_blog_posts', JSON.stringify(posts));
                 
-                // பெட்டிகளை காலி செய்கிறது
+                // பெட்டிகளை காலி செய்ய
                 document.getElementById('post-title').value = '';
                 document.getElementById('post-image').value = '';
                 document.getElementById('post-content').value = '';
                 
-                renderPosts();
-                alert('போஸ்ட் வெற்றிகரமாக சேர்க்கப்பட்டது!');
+                alert("பதிவு வெற்றிகரமாக சேர்க்கப்பட்டது!");
+                goHome(); // முகப்புக்குச் செல்ல
             } else {
-                alert('தலைப்பு மற்றும் படத்தின் லிங்க் கட்டாயம் தேவை!');
+                alert("தயவுசெய்து தலைப்பு, படம் மற்றும் செய்தியை நிரப்பவும்!");
             }
         }
 
-        // விரிவாகப் படிக்கும் பக்கத்தைக் காட்டும் ஃபங்ஷன்
+        // போஸ்ட்டை விரிவாகப் படிக்கத் தனிப் பக்கத்தைத் திறக்க
         function showDetail(index) {
             const post = posts[index];
             
-            // அந்தந்த போஸ்ட்டின் தகவல்களைச் செட் செய்கிறது
             document.getElementById('detail-title').innerText = post.title;
             document.getElementById('detail-image').src = post.image;
-            
-            // பழைய போஸ்ட்களில் 'Content' இல்லை என்றால் அதற்கான மாற்று வாசகம்
-            document.getElementById('detail-content').innerText = post.content || 'இந்த பதிவுக்கு இன்னும் முழுமையான செய்தி சேர்க்கப்படவில்லை.'; 
+            document.getElementById('detail-content').innerText = post.content || 'இந்த பதிவுக்கு முழுமையான செய்தி இல்லை.'; 
 
-            // முகப்புப் பக்கத்தை மறைத்துவிட்டு, படிக்கும் பக்கத்தைக் காட்டுகிறது
-            document.getElementById('main-page').style.display = 'none';
+            hideAllSections();
+            document.getElementById("ads-section").style.display = "none"; // படிக்கும் போது விளம்பரம் வேண்டாம் என்றால் இதை வைக்கலாம்
             document.getElementById('detail-page').style.display = 'block';
-            
-            // பக்கத்தின் மேலே கொண்டு செல்லும்
             window.scrollTo(0, 0);
         }
 
-        // மீண்டும் முகப்புப் பக்கத்திற்குச் செல்லும் ஃபங்ஷன்
+        // படிக்கும் பக்கத்திலிருந்து மீண்டும் முகப்புக்குச் செல்ல
         function goBack() {
-            document.getElementById('main-page').style.display = 'block';
-            document.getElementById('detail-page').style.display = 'none';
+            goHome();
         }
 
-        // பக்கம் திறந்தவுடன் போஸ்ட்களைக் காட்ட
-        renderPosts();
+        // வெப்சைட் திறந்தவுடன் போஸ்ட்களைக் காட்ட
+        goHome();
     </script>
 </body>
-</html>
+    </html>
+    
