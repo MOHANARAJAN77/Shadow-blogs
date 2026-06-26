@@ -3,205 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Ball Blog</title>
+    <title>Shadow Blocks - Tournament of Power 3D Experience</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
     <style>
-        /* Dragon Ball Theme Colors: Orange and Blue */
         :root {
             --db-orange: #FF5E00;
-            --db-blue: #0038A8;
-            --db-yellow: #FFD700;
-            --bg-dark: #121212;
-            --text-light: #F4F4F4;
+            --db-blue: #00A2FF;
+            --db-purple: #8e44ad;
+            --bg-dark: #020204;
+            --text-light: #FFFFFF;
+            --goku-ui: #dff9fb;
         }
 
-        body {
+        body, html {
             margin: 0;
-            font-family: 'Arial', sans-serif;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-light);
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* Intro Animation */
-        #loader {
+        /* 3D CINEMATIC INTRO INTERFACE */
+        #cinematic-viewport {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: var(--db-orange);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             z-index: 9999;
-            animation: superSaiyanFade 3s forwards;
+            background-color: #000;
+            transition: transform 1.8s cubic-bezier(0.85, 0, 0.15, 1), opacity 1.5s ease-in-out;
         }
 
-        #loader h1 {
-            font-size: 3rem;
-            color: var(--db-yellow);
-            text-shadow: 0 0 20px #fff;
-            animation: pulse 1s infinite;
+        #canvas-3d-arena {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        /* Cinematic HUD & Typography overlay */
+        .hud-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px;
+            box-sizing: border-box;
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 100%);
         }
 
-        @keyframes superSaiyanFade {
-            0% { opacity: 1; visibility: visible; }
-            80% { opacity: 1; visibility: visible; }
-            100% { opacity: 0; visibility: hidden; }
-        }
-
-        /* Header & Hamburger Menu */
-        header {
-            background-color: var(--db-blue);
-            padding: 15px 20px;
+        .hud-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 4px solid var(--db-orange);
+            opacity: 0;
+            animation: fadeInHUD 1.5s ease-out 0.5s forwards;
+        }
+
+        .hud-title {
+            font-size: 1rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--db-blue);
+            text-shadow: 0 0 10px rgba(0,162,255,0.5);
+        }
+
+        .center-impact {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+        }
+
+        .epic-title {
+            font-size: 5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 12px;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #bdc3c7 50%, var(--db-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0,262,255,0.6));
+            animation: epicZoomDrop 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        .epic-subtitle {
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 8px;
+            color: var(--db-orange);
+            text-transform: uppercase;
+            margin-top: 15px;
+            text-shadow: 0 0 15px rgba(255,94,0,0.7);
+            opacity: 0;
+            animation: fadeInHUD 1s ease-out 1.2s forwards;
+        }
+
+        /* Power Level Display Cards (Inside 3D Intro) */
+        .power-rankings {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInHUD 1.5s ease-out 2s forwards;
+            pointer-events: auto;
+        }
+
+        .character-card {
+            background: rgba(15, 15, 25, 0.6);
+            border: 1px solid rgba(0, 162, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 4px;
+            backdrop-filter: blur(5px);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .character-card:hover {
+            border-color: var(--db-orange);
+            transform: translateY(-5px);
+            background: rgba(255, 94, 0, 0.05);
+        }
+
+        .char-name {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .char-power {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 5px;
+            font-family: monospace;
+        }
+
+        .skip-btn {
+            background: transparent;
+            border: 1px solid var(--db-orange);
+            color: #fff;
+            padding: 12px 30px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: 0.3s;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInHUD 1s ease-out 2.5s forwards;
+        }
+
+        .skip-btn:hover {
+            background-color: var(--db-orange);
+            box-shadow: 0 0 15px var(--db-orange);
+            transform: scale(1.05);
+        }
+
+        /* MAIN PORTAL CONTENT LAYOUT */
+        #main-website {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            display: block;
+            background-color: var(--bg-dark);
+        }
+
+        header {
+            background: linear-gradient(180deg, #09090d 0%, rgba(9,9,13,0.9) 100%);
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #12121c;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--db-yellow);
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background-color: var(--db-orange);
         }
 
         .menu-btn {
-            font-size: 2rem;
-            color: var(--db-yellow);
+            font-size: 2.5rem;
+            color: var(--db-blue);
             cursor: pointer;
             background: none;
             border: none;
+            transition: 0.3s;
         }
 
-        /* Sidebar Menu */
+        .menu-btn:hover {
+            color: var(--db-orange);
+            transform: rotate(90deg);
+        }
+
+        /* SIDEBAR CATEGORIES MENU */
         #sidebar {
             position: fixed;
             top: 0;
-            right: -250px;
-            width: 250px;
+            right: -320px;
+            width: 320px;
             height: 100vh;
-            background-color: #222;
-            transition: 0.3s;
+            background-color: #07070a;
+            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1000;
-            padding-top: 60px;
-            border-left: 3px solid var(--db-orange);
+            padding-top: 100px;
+            border-left: 2px solid var(--db-blue);
+            box-shadow: -20px 0 40px rgba(0,0,0,0.9);
+        }
+
+        #sidebar h3 {
+            color: #444;
+            padding-left: 40px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
         }
 
         #sidebar a {
-            padding: 15px 25px;
+            padding: 18px 40px;
             text-decoration: none;
-            font-size: 1.2rem;
-            color: var(--text-light);
+            font-size: 1.1rem;
+            color: #999;
             display: block;
-            transition: 0.2s;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
         }
 
         #sidebar a:hover {
-            background-color: var(--db-orange);
+            background: linear-gradient(90deg, rgba(0,162,255,0.05) 0%, transparent 100%);
             color: #fff;
+            border-left-color: var(--db-blue);
+            padding-left: 50px;
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 2rem;
-            color: var(--db-yellow);
+            top: 30px;
+            right: 40px;
+            font-size: 2.5rem;
+            color: #fff;
             cursor: pointer;
         }
 
-        /* Main Content & AdSense Space */
-        .container {
-            padding: 20px;
-            max-width: 1200px;
+        /* MAIN GRID CONTENT */
+        .content-wrapper {
+            padding: 60px 40px;
+            max-width: 1400px;
             margin: auto;
         }
 
-        .adsense-banner {
-            background-color: #333;
-            color: #888;
+        .ads-container {
+            background-color: #08080c;
+            border: 1px dashed #1a1a26;
+            color: #444;
             text-align: center;
-            padding: 50px 0;
-            margin: 20px 0;
-            border: 1px dashed #666;
-            border-radius: 5px;
+            padding: 60px 0;
+            margin-bottom: 50px;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
         }
 
         .blog-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 40px;
         }
 
         .blog-card {
-            background-color: #1E1E1E;
-            padding: 20px;
-            border-radius: 8px;
-            border-bottom: 3px solid var(--db-orange);
+            background-color: #0a0a0f;
+            border: 1px solid #11111a;
+            padding: 35px;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 94, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
 
         .blog-card h3 {
-            color: var(--db-blue);
-            color: #74b9ff;
+            font-size: 1.6rem;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .blog-card p {
+            color: #7e7e8c;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* INTRO ANIMATIONS KEYFRAMES */
+        @keyframes fadeInHUD {
+            to { opacity: 1; }
+        }
+
+        @keyframes epicZoomDrop {
+            0% { transform: translate(-50%, -50%) scale(4); opacity: 0; filter: blur(30px); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: blur(0); }
         }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <h1>KAMEHAMEHA...</h1>
+    <div id="cinematic-viewport">
+        <canvas id="canvas-3d-arena"></canvas>
+        <div class="hud-overlay">
+            <div class="hud-header">
+                <div class="hud-title">System: WebGL 3D Active</div>
+                <div style="color: #666; font-size: 0.8rem;">DRAGON BALL ULTRA INTRO</div>
+            </div>
+            
+            <div class="center-impact">
+                <h1 class="epic-title">Tournament Of Power</h1>
+                <div class="epic-subtitle">Shadow Blocks Edition</div>
+                <button class="skip-btn" onclick="exitCinematic()">Enter Website</button>
+            </div>
+
+            <div class="power-rankings">
+                <div class="character-card">
+                    <div class="char-name">Goku (Ultra Instinct)</div>
+                    <div class="char-power" style="color: var(--goku-ui);">99,999,999+</div>
+                </div>
+                <div class="character-card">
+                    <div class="char-name">Jiren (Full Power)</div>
+                    <div class="char-power" style="color: #e74c3c;">99,500,000</div>
+                </div>
+                <div class="character-card">
+                    <div class="char-name">Vegeta (UE / SSB)</div>
+                    <div class="char-power" style="color: var(--db-blue);">92,000,000</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <header>
-        <div class="logo">DBZ Blog Portal</div>
-        <button class="menu-btn" onclick="openNav()">☰</button>
-    </header>
+    <div id="main-website">
+        <header>
+            <div class="logo">Shadow Blocks</div>
+            <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
+        </header>
 
-    <div id="sidebar">
-        <span class="close-btn" onclick="closeNav()">×</span>
-        <a href="#">🏠 Home</a>
-        <a href="#">🥋 Martial Arts Tech</a>
-        <a href="#">🐉 Dragon Balls Lore</a>
-        <a href="#">🎬 Anime Reviews</a>
-        <a href="#">🔒 Admin Login</a>
-    </div>
-
-    <div class="container">
-        <div class="adsense-banner">
-            [Google AdSense Banner Space]
+        <div class="sidebar-overlay" id="sidebar">
+            <span class="close-btn" onclick="toggleSidebar(false)">×</span>
+            <h3>Categories</h3>
+            <a href="#">🔥 Anime Updates</a>
+            <a href="#">🎮 Gaming News</a>
+            <a href="#">💻 Tech & Leaks</a>
+            <a href="#">🍿 Movies & Series</a>
+            <a href="#">🌍 Global Trends</a>
+            <hr style="border:0; border-top: 1px solid #12121c; margin: 40px 0;">
+            <a href="#" style="color: var(--db-orange); font-weight: bold;">🔒 Admin Access</a>
         </div>
 
-        <h2>Latest Articles</h2>
-        <div class="blog-grid">
-            <div class="blog-card">
-                <h3>The Power of Super Saiyan</h3>
-                <p>Blog post content will appear here once you publish it from the admin panel...</p>
+        <div class="content-wrapper">
+            <div class="ads-container">
+                [ Google AdSense Banner Slot - Premium Placement ]
             </div>
-            <div class="blog-card">
-                <h3>Finding the 7th Dragon Ball</h3>
-                <p>Blog post content will appear here once you publish it from the admin panel...</p>
+
+            <h2 style="font-size: 2rem; margin-bottom: 30px; letter-spacing: 1px;">Featured Editorial</h2>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <h3>The Architecture of Shadow Blocks</h3>
+                    <p>முழுமையான 3D துகள்கள் மற்றும் அனிமேஷன் தொழில்நுட்பத்துடன் கூடிய தளம் வெற்றிகரமாக வடிவமைக்கப்பட்டுள்ளது. அடுத்ததாக நாம் நிர்வாகி பக்கத்தை (Admin Panel) இணைக்கலாம்...</p>
+                </div>
+                <div class="blog-card">
+                    <h3>Godly Power Scaling Explored</h3>
+                    <p>டோர்னமென்ட் ஆஃப் பவர் அரங்கத்தின் 3D வடிவமைப்பு மற்றும் அதன் கேமரா சுழற்சிகள் பிரவுசரின் முடுக்கத்தைப் பயன்படுத்தி மிக நேர்த்தியாக இயங்குகின்றன...</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Sidebar Menu Logic
-        function openNav() {
-            document.getElementById("sidebar").style.right = "0";
+        let scene, camera, renderer, controls;
+        let energyPillar, arenaRing, auraClouds, debrisField;
+        
+        function init3DEngine() {
+            const viewport = document.getElementById('canvas-3d-arena');
+            
+            // Scene & Setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2('#020204', 0.08);
+
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 12);
+
+            // WebGL Renderer
+            renderer = new THREE.WebGLRenderer({ canvas: viewport, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Orbit Camera Interaction (Allows user to look around like high-end websites)
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2 - 0.05; // Don't clip below ground
+
+            // Lights Architecture
+            const ambientLight = new THREE.AmbientLight('#111122');
+            scene.add(ambientLight);
+
+            const pillarLight = new THREE.PointLight('#00A2FF', 5, 30);
+            pillarLight.position.set(0, 2, 0);
+            scene.add(pillarLight);
+
+            const explosiveLight = new THREE.PointLight('#FF5E00', 3, 20);
+            explosiveLight.position.set(0, -2, 0);
+            scene.add(explosiveLight);
+
+            // 1. CORE ARENA GENERATION (The Center Pillar of Tournament of Power)
+            const pillarGeo = new THREE.CylinderGeometry(0.8, 1.2, 8, 32, 1, true);
+            const pillarMat = new THREE.MeshBasicMaterial({
+                color: '#00A2FF',
+                wireframe: true,
+                transparent: true,
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending
+            });
+            energyPillar = new THREE.Mesh(pillarGeo, pillarMat);
+            scene.add(energyPillar);
+
+            // 2. GROUND ARENA FLOATING RINGS
+            const ringGeo = new THREE.RingGeometry(3, 6, 64);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: '#221133',
+                side: THREE.DoubleSide,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.15
+            });
+            arenaRing = new THREE.Mesh(ringGeo, ringMat);
+            arenaRing.rotation.x = Math.PI / 2;
+            scene.add(arenaRing);
+
+            // 3. MASSIVE 3D SAIYAN AURA SYSTEM (1500 Particles)
+            const particleCount = 1800;
+            const auraGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            const colorGoku = new THREE.Color('#00ffff');
+            const colorJiren = new THREE.Color('#FF5E00');
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                // Cyclical spiral generation around the pillar
+                let angle = Math.random() * Math.PI * 2;
+                let radius = 1.5 + Math.random() * 6;
+                
+                positions[i] = Math.cos(angle) * radius;
+                positions[i + 1] = (Math.random() - 0.5) * 10;
+                positions[i + 2] = Math.sin(angle) * radius;
+
+                // Alternate Aura Colors for fighters
+                let mixed = Math.random() > 0.5 ? colorGoku : colorJiren;
+                colors[i] = mixed.r;
+                colors[i + 1] = mixed.g;
+                colors[i + 2] = mixed.b;
+            }
+
+            auraGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            auraGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const auraMaterial = new THREE.PointsMaterial({
+                size: 0.08,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            });
+
+            auraClouds = new THREE.Points(auraGeometry, auraMaterial);
+            scene.add(auraClouds);
+
+            // 4. FLOATING ARENA DEBRIS (Broken Rocks Effect)
+            const debrisCount = 60;
+            const debrisGeo = new THREE.DodecahedronGeometry(0.15, 0);
+            const debrisMat = new THREE.MeshLambertMaterial({ color: '#2c3e50', wireframe: false });
+            
+            debrisField = new THREE.Group();
+            for(let i=0; i<debrisCount; i++) {
+                let mesh = new THREE.Mesh(debrisGeo, debrisMat);
+                mesh.position.set(
+                    (Math.random() - 0.5) * 14,
+                    (Math.random() - 0.3) * 8,
+                    (Math.random() - 0.5) * 14
+                );
+                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+                debrisField.add(mesh);
+            }
+            scene.add(debrisField);
+
+            // Render loop initiation
+            animate3DScene();
         }
 
-        function closeNav() {
-            document.getElementById("sidebar").style.right = "-250px";
+        // Realtime Rendering Calculations
+        function animate3DScene() {
+            requestAnimationFrame(animate3DScene);
+
+            // Rotations & Telemetry
+            energyPillar.rotation.y -= 0.01;
+            arenaRing.rotation.z += 0.002;
+            auraClouds.rotation.y += 0.004;
+
+            // Float debris objects up and down (Simulating gravitational energy)
+            debrisField.children.forEach((rock, idx) => {
+                rock.rotation.y += 0.01;
+                rock.position.y += Math.sin(Date.now() * 0.001 + idx) * 0.005;
+            });
+
+            // Energy wave pulse calculations inside the geometry array
+            const arr = auraClouds.geometry.attributes.position.array;
+            for(let i = 1; i < arr.length; i += 3) {
+                arr[i] += Math.sin(Date.now() * 0.003 + i) * 0.01; // Aura floating speed upward
+                if(arr[i] > 5) arr[i] = -5; // Reset position at bounds
+            }
+            auraClouds.geometry.attributes.position.needsUpdate = true;
+
+            controls.update();
+            renderer.render(scene, camera);
         }
+
+        // System Resize Manager
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // INTRO CONTROL SYSTEM
+        function exitCinematic() {
+            const viewport = document.getElementById('cinematic-viewport');
+            viewport.style.transform = 'translateY(-100vh)';
+            viewport.style.opacity = '0';
+            setTimeout(() => {
+                viewport.style.display = 'none';
+            }, 1800);
+        }
+
+                // UI SIDEBAR NAVIGATION
+        function toggleSidebar(open) {
+            document.getElementById("sidebar").style.right = open ? "0" : "-320px";
+        }
+
+        // Trigger on load
+        window.onload = init3DEngine;
     </script>
-
 </body>
- </html>
- 
+</html>
