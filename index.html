@@ -26,7 +26,7 @@
             overflow-x: hidden;
         }
 
-        /* 1. ஓப்பனிங் ஸ்க்ரீன் (Intro Screen) */
+        /* 1. ஓப்பனிங் ஸ்க்ரீன் */
         #intro-screen {
             position: fixed;
             top: 0;
@@ -63,14 +63,13 @@
             100% { transform: scale(1); opacity: 0.8; }
         }
 
-        /* 2. மெயின் கண்டென்ட் (மறைக்கப்பட்டிருக்கும்) */
         #main-website {
             display: none;
             opacity: 0;
             transition: opacity 1s ease;
         }
 
-        /* 3. ஹெடர் & நேவிகேஷன் */
+        /* 2. ஹெடர் */
         header {
             background-color: #15151a;
             padding: 15px 20px;
@@ -89,7 +88,7 @@
             gap: 15px;
         }
 
-        .menu-btn {
+        .menu-btn, .search-btn {
             font-size: 1.5rem;
             color: #fff;
             background: none;
@@ -103,15 +102,7 @@
             color: #fff;
         }
 
-        .search-btn {
-            font-size: 1.2rem;
-            color: #fff;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* 4. சைட் பார் (Sidebar - தமிழில்) */
+        /* 3. சைட் பார் */
         #sidebar {
             position: fixed;
             top: 0;
@@ -156,7 +147,13 @@
             border-left: 4px solid var(--accent-color);
         }
 
-        /* 5. தேடல் பெட்டி (Search Bar) */
+        /* அட்மின் பட்டன் ஸ்டைல் */
+        .admin-link a {
+            color: #e74c3c !important;
+            font-weight: bold;
+        }
+
+        /* 4. தேடல் பெட்டி */
         #search-container {
             display: none;
             padding: 15px;
@@ -174,7 +171,7 @@
             outline: none;
         }
 
-        /* 6. ட்ரெண்டிங் பகுதி (Horizontal Scroll) */
+        /* 5. ட்ரெண்டிங் பகுதி */
         .section-title {
             padding: 20px 15px 5px;
             font-size: 1.2rem;
@@ -187,12 +184,10 @@
             overflow-x: auto;
             padding: 10px 15px;
             gap: 15px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         
-        .trending-wrapper::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
-        }
+        .trending-wrapper::-webkit-scrollbar { display: none; }
 
         .trending-card {
             min-width: 200px;
@@ -215,7 +210,6 @@
             font-weight: 500;
         }
 
-        /* 7. விளம்பர இடம் (Google AdSense Space) */
         .ad-space {
             margin: 25px 15px;
             background-color: #111;
@@ -229,7 +223,7 @@
             border-radius: 5px;
         }
 
-        /* 8. பிளாக் செய்திகள் (Vertical Scroll - Image + Box) */
+        /* 6. பிளாக் செய்திகள் */
         .blog-feed {
             padding: 10px 15px;
             display: flex;
@@ -247,17 +241,9 @@
             height: 120px;
         }
 
-        .blog-image {
-            width: 35%;
-            height: 100%;
-        }
-
-        .blog-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        .blog-image { width: 35%; height: 100%; }
+        .blog-image img { width: 100%; height: 100%; object-fit: cover; }
+        
         .blog-content {
             width: 65%;
             padding: 12px;
@@ -265,22 +251,60 @@
             flex-direction: column;
             justify-content: center;
         }
+        .blog-content h3 { margin: 0 0 8px 0; font-size: 1rem; color: #fff; }
+        .blog-content .time { font-size: 0.75rem; color: var(--text-muted); }
 
-        .blog-content h3 {
-            margin: 0 0 8px 0;
-            font-size: 1rem;
+        /* 7. அட்மின் பாப்-அப் (Admin Modal) */
+        #admin-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-box {
+            background: #1c1c21;
+            padding: 25px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        .admin-box h2 { margin-top: 0; color: var(--accent-color); }
+        .admin-box input, .admin-box button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #0f0f11;
             color: #fff;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        }
+        
+        .admin-box button {
+            background: var(--accent-color);
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
         }
 
-        .blog-content .time {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        .admin-box button:hover { background: #1a5276; }
+        
+        .close-admin {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
         }
+
+        /* பிளாக் ஆட் செய்யும் பகுதி (Hidden initially) */
+        #add-post-form { display: none; }
 
     </style>
 </head>
@@ -308,7 +332,7 @@
                 <li><a href="#"><i class="fas fa-film"></i> திரைப்படங்கள்</a></li>
                 <li><a href="#"><i class="fas fa-mobile-alt"></i> தொழில்நுட்பம்</a></li>
                 <li><a href="#"><i class="fas fa-newspaper"></i> செய்திகள்</a></li>
-                <li><a href="#"><i class="fas fa-gamepad"></i> கேமிங்</a></li>
+                <li class="admin-link"><a href="#" onclick="openAdminModal()"><i class="fas fa-lock"></i> அட்மின் (Post Add)</a></li>
             </ul>
         </div>
 
@@ -322,114 +346,142 @@
                 <img src="https://via.placeholder.com/200x120/222/fff?text=Trending+1" alt="Trend">
                 <p>லியோ படத்தின் புதிய அப்டேட் வெளியீடு!</p>
             </div>
-            <div class="trending-card">
-                <img src="https://via.placeholder.com/200x120/222/fff?text=Trending+2" alt="Trend">
-                <p>புதிய ஐபோன் 15-ல் உள்ள முக்கிய அம்சங்கள்.</p>
-            </div>
-            <div class="trending-card">
-                <img src="https://via.placeholder.com/200x120/222/fff?text=Trending+3" alt="Trend">
-                <p>இன்றைய தங்கம் மற்றும் வெள்ளி நிலவரம்.</p>
-            </div>
         </div>
 
-        <div class="ad-space">
-            [ கூகுள் AdSense விளம்பரத்திற்கான இடம் ]
-        </div>
+        <div class="ad-space"> [ கூகுள் AdSense விளம்பரத்திற்கான இடம் ] </div>
 
         <div class="section-title">சமீபத்திய பிளாக்ஸ்</div>
-        <div class="blog-feed">
-            
+        <div class="blog-feed" id="blog-feed-container">
             <div class="blog-box">
                 <div class="blog-image">
-                    <img src="https://via.placeholder.com/150/333/fff?text=Post+1" alt="Post">
+                    <img src="https://via.placeholder.com/150/333/fff?text=Default+Post" alt="Post">
                 </div>
                 <div class="blog-content">
                     <h3>செயற்கை நுண்ணறிவு (AI) எதிர்காலத்தை எப்படி மாற்றப் போகிறது?</h3>
                     <span class="time">2 மணி நேரத்திற்கு முன்</span>
                 </div>
             </div>
-
-            <div class="blog-box">
-                <div class="blog-image">
-                    <img src="https://via.placeholder.com/150/333/fff?text=Post+2" alt="Post">
-                </div>
-                <div class="blog-content">
-                    <h3>தமிழ்நாட்டில் புதிய வேலைவாய்ப்பு திட்டங்கள் அறிமுகம்</h3>
-                    <span class="time">5 மணி நேரத்திற்கு முன்</span>
-                </div>
-            </div>
-
-            <div class="blog-box">
-                <div class="blog-image">
-                    <img src="https://via.placeholder.com/150/333/fff?text=Post+3" alt="Post">
-                </div>
-                <div class="blog-content">
-                    <h3>கம்மி விலையில் கிடைக்கும் டாப் 5 5G ஸ்மார்ட்போன்கள்</h3>
-                    <span class="time">நேற்று</span>
-                </div>
-            </div>
-
-            <div class="blog-box">
-                <div class="blog-image">
-                    <img src="https://via.placeholder.com/150/333/fff?text=Post+4" alt="Post">
-                </div>
-                <div class="blog-content">
-                    <h3>உலகக் கோப்பை கிரிக்கெட்: புள்ளிப்பட்டியலில் முதலிடத்தில் இந்தியா!</h3>
-                    <span class="time">நேற்று</span>
-                </div>
-            </div>
-            
-            <div class="blog-box">
-                <div class="blog-image">
-                    <img src="https://via.placeholder.com/150/333/fff?text=Post+5" alt="Post">
-                </div>
-                <div class="blog-content">
-                    <h3>புதிய ஹாலிவுட் வெப் சீரிஸ் விமர்சனம் - பார்க்கலாமா?</h3>
-                    <span class="time">2 நாட்களுக்கு முன்</span>
-                </div>
-            </div>
-
         </div>
+    </div>
 
+    <div id="admin-modal">
+        <div class="admin-box">
+            <span class="close-admin" onclick="closeAdminModal()">&times;</span>
+            
+            <div id="login-form">
+                <h2>Admin Login</h2>
+                <input type="password" id="admin-password" placeholder="பாஸ்வேர்டை உள்ளிடவும்">
+                <button onclick="checkPassword()">உள்ளே செல்</button>
+            </div>
+
+            <div id="add-post-form">
+                <h2>புதிய போஸ்ட் சேர்</h2>
+                <input type="text" id="post-title" placeholder="பிளாக் தலைப்பு (Title)">
+                <input type="text" id="post-image" placeholder="புகைப்படத்தின் லிங்க் (Image URL)">
+                <button onclick="addNewPost()">பப்ளிஷ் செய்</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // 1. ஓப்பனிங் ஸ்க்ரீனில் இருந்து உள்ளே செல்வது
+        // 1. ஓப்பனிங் ஸ்க்ரீன்
         function enterBlog() {
             const intro = document.getElementById('intro-screen');
             const main = document.getElementById('main-website');
-            
             intro.style.opacity = '0';
             setTimeout(() => {
                 intro.style.visibility = 'hidden';
                 main.style.display = 'block';
-                // உள்ளே வந்ததும் Fade in ஆவதற்கு
-                setTimeout(() => {
-                    main.style.opacity = '1';
-                }, 50);
+                setTimeout(() => { main.style.opacity = '1'; }, 50);
             }, 800);
+            loadSavedPosts(); // சேமிக்கப்பட்ட போஸ்ட்களை ஏற்ற
         }
 
-        // 2. சைட் பார் மெனுவை திறப்பது/மூடுவது
+        // 2. மெனு & சர்ச்
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            if (sidebar.style.left === '0px') {
-                sidebar.style.left = '-280px';
+            sidebar.style.left = (sidebar.style.left === '0px') ? '-280px' : '0px';
+        }
+
+        function toggleSearch() {
+            const searchBox = document.getElementById('search-container');
+            searchBox.style.display = (searchBox.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // 3. அட்மின் கண்ட்ரோல்ஸ்
+        const adminModal = document.getElementById('admin-modal');
+        const loginForm = document.getElementById('login-form');
+        const addPostForm = document.getElementById('add-post-form');
+
+        function openAdminModal() {
+            toggleSidebar(); // மெனுவை மூட
+            adminModal.style.display = 'flex';
+            loginForm.style.display = 'block';
+            addPostForm.style.display = 'none';
+            document.getElementById('admin-password').value = '';
+        }
+
+        function closeAdminModal() {
+            adminModal.style.display = 'none';
+        }
+
+        // நீங்கள் கொடுத்த பாஸ்வேர்ட் செக்கிங்!
+        function checkPassword() {
+            const pass = document.getElementById('admin-password').value;
+            if (pass === 'shadowpirate36187522') {
+                loginForm.style.display = 'none';
+                addPostForm.style.display = 'block';
             } else {
-                sidebar.style.left = '0px';
+                alert('தவறான பாஸ்வேர்ட்! மீண்டும் முயற்சிக்கவும்.');
             }
         }
 
-        // 3. சர்ச் பட்டனை தொட்டால் தேடல் பெட்டி வருவது
-        function toggleSearch() {
-            const searchContainer = document.getElementById('search-container');
-            if (searchContainer.style.display === 'block') {
-                searchContainer.style.display = 'none';
-            } else {
-                searchContainer.style.display = 'block';
+        // 4. புதிய போஸ்ட் சேர்க்கும் வசதி
+        function addNewPost() {
+            const title = document.getElementById('post-title').value;
+            const imgUrl = document.getElementById('post-image').value || 'https://via.placeholder.com/150/333/fff?text=New+Post';
+
+            if(title === '') {
+                alert('தலைப்பை உள்ளிடவும்!');
+                return;
+            }
+
+            // புதிய HTML ஐ உருவாக்குதல்
+            const newPostHTML = `
+            <div class="blog-box">
+                <div class="blog-image">
+                    <img src="${imgUrl}" alt="Post">
+                </div>
+                <div class="blog-content">
+                    <h3>${title}</h3>
+                    <span class="time">சற்று முன்</span>
+                </div>
+            </div>`;
+
+            // வெப்சைட்டில் சேர்ப்பது
+            const feed = document.getElementById('blog-feed-container');
+            feed.insertAdjacentHTML('afterbegin', newPostHTML);
+
+            // பிரவுசரில் (Local Storage) சேமிப்பது
+            let savedPosts = localStorage.getItem('shadowPosts') || '';
+            localStorage.setItem('shadowPosts', newPostHTML + savedPosts);
+
+            // சுத்தம் செய்து மூடுவது
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-image').value = '';
+            closeAdminModal();
+            alert('வெற்றிகரமாக போஸ்ட் சேர்க்கப்பட்டது!');
+        }
+
+        // 5. பேஜ் லோட் ஆகும் போது சேமித்த போஸ்ட்களைக் காட்ட
+        function loadSavedPosts() {
+            const savedPosts = localStorage.getItem('shadowPosts');
+            if(savedPosts) {
+                const feed = document.getElementById('blog-feed-container');
+                feed.insertAdjacentHTML('afterbegin', savedPosts);
             }
         }
     </script>
 </body>
-    </html>
+                </html>
     
