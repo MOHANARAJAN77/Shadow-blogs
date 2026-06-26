@@ -3,593 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Blocks - Tournament of Power 3D Experience</title>
+    <title>Shadow Blog | A Leading Tamil Blog</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* டார்க் தீம் நிறங்கள் */
         :root {
-            --db-orange: #FF5E00;
-            --db-blue: #00A2FF;
-            --db-purple: #8e44ad;
-            --bg-dark: #020204;
-            --text-light: #FFFFFF;
-            --goku-ui: #dff9fb;
+            --bg-color: #0f0f11;
+            --box-bg: #1c1c21;
+            --text-color: #ffffff;
+            --text-muted: #a0a0a5;
+            --accent-color: #2980b9;
         }
 
         body, html {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
         }
 
-        /* 3D CINEMATIC INTRO INTERFACE */
-        #cinematic-viewport {
+        /* 1. ஓப்பனிங் ஸ்க்ரீன் (Intro Screen) */
+        #intro-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 9999;
-            background-color: #000;
-            transition: transform 1.8s cubic-bezier(0.85, 0, 0.15, 1), opacity 1.5s ease-in-out;
-        }
-
-        #canvas-3d-arena {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* Cinematic HUD & Typography overlay */
-        .hud-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+            background-color: #000000;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 40px;
-            box-sizing: border-box;
-            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 100%);
-        }
-
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            opacity: 0;
-            animation: fadeInHUD 1.5s ease-out 0.5s forwards;
-        }
-
-        .hud-title {
-            font-size: 1rem;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            color: var(--db-blue);
-            text-shadow: 0 0 10px rgba(0,162,255,0.5);
-        }
-
-        .center-impact {
-            text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-        }
-
-        .epic-title {
-            font-size: 5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 12px;
-            margin: 0;
-            background: linear-gradient(135deg, #fff 0%, #bdc3c7 50%, var(--db-blue) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(0,262,255,0.6));
-            animation: epicZoomDrop 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-        }
-
-        .epic-subtitle {
-            font-size: 1.6rem;
-            font-weight: 400;
-            letter-spacing: 8px;
-            color: var(--db-orange);
-            text-transform: uppercase;
-            margin-top: 15px;
-            text-shadow: 0 0 15px rgba(255,94,0,0.7);
-            opacity: 0;
-            animation: fadeInHUD 1s ease-out 1.2s forwards;
-        }
-
-        /* Power Level Display Cards (Inside 3D Intro) */
-        .power-rankings {
-            display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeInHUD 1.5s ease-out 2s forwards;
-            pointer-events: auto;
-        }
-
-        .character-card {
-            background: rgba(15, 15, 25, 0.6);
-            border: 1px solid rgba(0, 162, 255, 0.2);
-            padding: 15px 25px;
-            border-radius: 4px;
-            backdrop-filter: blur(5px);
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .character-card:hover {
-            border-color: var(--db-orange);
-            transform: translateY(-5px);
-            background: rgba(255, 94, 0, 0.05);
-        }
-
-        .char-name {
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #888;
-        }
-
-        .char-power {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #fff;
-            margin-top: 5px;
-            font-family: monospace;
-        }
-
-        .skip-btn {
-            background: transparent;
-            border: 1px solid var(--db-orange);
-            color: #fff;
-            padding: 12px 30px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            align-items: center;
+            z-index: 9999;
             cursor: pointer;
-            pointer-events: auto;
-            transition: 0.3s;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .intro-title {
+            color: #ffffff;
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        .intro-hint {
+            color: #555;
             margin-top: 20px;
-            opacity: 0;
-            animation: fadeInHUD 1s ease-out 2.5s forwards;
+            font-size: 0.9rem;
         }
 
-        .skip-btn:hover {
-            background-color: var(--db-orange);
-            box-shadow: 0 0 15px var(--db-orange);
-            transform: scale(1.05);
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
-        /* MAIN PORTAL CONTENT LAYOUT */
+        /* 2. மெயின் கண்டென்ட் (மறைக்கப்பட்டிருக்கும்) */
         #main-website {
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            display: block;
-            background-color: var(--bg-dark);
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
+        /* 3. ஹெடர் & நேவிகேஷன் */
         header {
-            background: linear-gradient(180deg, #09090d 0%, rgba(9,9,13,0.9) 100%);
-            padding: 25px 50px;
+            background-color: #15151a;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #12121c;
             position: sticky;
             top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #2a2a35;
         }
 
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            position: relative;
-        }
-
-        .logo::before {
-            content: '';
-            position: absolute;
-            left: -15px;
-            top: 15%;
-            height: 70%;
-            width: 4px;
-            background-color: var(--db-orange);
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .menu-btn {
-            font-size: 2.5rem;
-            color: var(--db-blue);
-            cursor: pointer;
+            font-size: 1.5rem;
+            color: #fff;
             background: none;
             border: none;
-            transition: 0.3s;
+            cursor: pointer;
         }
 
-        .menu-btn:hover {
-            color: var(--db-orange);
-            transform: rotate(90deg);
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
         }
 
-        /* SIDEBAR CATEGORIES MENU */
+        .search-btn {
+            font-size: 1.2rem;
+            color: #fff;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 4. சைட் பார் (Sidebar - தமிழில்) */
         #sidebar {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 320px;
+            left: -280px;
+            width: 280px;
             height: 100vh;
-            background-color: #07070a;
-            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1000;
-            padding-top: 100px;
-            border-left: 2px solid var(--db-blue);
-            box-shadow: -20px 0 40px rgba(0,0,0,0.9);
-        }
-
-        #sidebar h3 {
-            color: #444;
-            padding-left: 40px;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-        }
-
-        #sidebar a {
-            padding: 18px 40px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            color: #999;
-            display: block;
-            transition: 0.3s;
-            border-left: 4px solid transparent;
-        }
-
-        #sidebar a:hover {
-            background: linear-gradient(90deg, rgba(0,162,255,0.05) 0%, transparent 100%);
-            color: #fff;
-            border-left-color: var(--db-blue);
-            padding-left: 50px;
+            background-color: #1a1a20;
+            z-index: 2000;
+            transition: 0.4s ease;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+            padding-top: 20px;
         }
 
         .close-btn {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #fff;
+            text-align: right;
+            display: block;
+            padding: 0 20px;
             cursor: pointer;
+            background: none;
+            border: none;
         }
 
-        /* MAIN GRID CONTENT */
-        .content-wrapper {
-            padding: 60px 40px;
-            max-width: 1400px;
-            margin: auto;
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
         }
 
-        .ads-container {
-            background-color: #08080c;
-            border: 1px dashed #1a1a26;
-            color: #444;
-            text-align: center;
-            padding: 60px 0;
-            margin-bottom: 50px;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 40px;
-        }
-
-        .blog-card {
-            background-color: #0a0a0f;
-            border: 1px solid #11111a;
-            padding: 35px;
-            border-radius: 4px;
-            transition: all 0.4s ease;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(255, 94, 0, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        .blog-card h3 {
-            font-size: 1.6rem;
+        .sidebar-menu li a {
             color: #fff;
-            margin-top: 0;
-            margin-bottom: 15px;
+            text-decoration: none;
+            padding: 15px 30px;
+            display: block;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #25252e;
         }
 
-        .blog-card p {
-            color: #7e7e8c;
-            line-height: 1.8;
-            font-size: 1.05rem;
+        .sidebar-menu li a:hover {
+            background-color: #2a2a35;
+            border-left: 4px solid var(--accent-color);
         }
 
-        /* INTRO ANIMATIONS KEYFRAMES */
-        @keyframes fadeInHUD {
-            to { opacity: 1; }
+        /* 5. தேடல் பெட்டி (Search Bar) */
+        #search-container {
+            display: none;
+            padding: 15px;
+            background-color: #1a1a20;
+            text-align: center;
+        }
+        
+        #search-container input {
+            width: 90%;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background-color: #0f0f11;
+            color: #fff;
+            outline: none;
         }
 
-        @keyframes epicZoomDrop {
-            0% { transform: translate(-50%, -50%) scale(4); opacity: 0; filter: blur(30px); }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: blur(0); }
+        /* 6. ட்ரெண்டிங் பகுதி (Horizontal Scroll) */
+        .section-title {
+            padding: 20px 15px 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
         }
+
+        .trending-wrapper {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 15px;
+            gap: 15px;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .trending-wrapper::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .trending-card {
+            min-width: 200px;
+            background-color: var(--box-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .trending-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .trending-card p {
+            padding: 10px;
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* 7. விளம்பர இடம் (Google AdSense Space) */
+        .ad-space {
+            margin: 25px 15px;
+            background-color: #111;
+            border: 1px dashed #444;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #555;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
+
+        /* 8. பிளாக் செய்திகள் (Vertical Scroll - Image + Box) */
+        .blog-feed {
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .blog-box {
+            display: flex;
+            background-color: var(--box-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #2a2a35;
+            height: 120px;
+        }
+
+        .blog-image {
+            width: 35%;
+            height: 100%;
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            width: 65%;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .blog-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            color: #fff;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-content .time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="cinematic-viewport">
-        <canvas id="canvas-3d-arena"></canvas>
-        <div class="hud-overlay">
-            <div class="hud-header">
-                <div class="hud-title">System: WebGL 3D Active</div>
-                <div style="color: #666; font-size: 0.8rem;">DRAGON BALL ULTRA INTRO</div>
-            </div>
-            
-            <div class="center-impact">
-                <h1 class="epic-title">Tournament Of Power</h1>
-                <div class="epic-subtitle">Shadow Blocks Edition</div>
-                <button class="skip-btn" onclick="exitCinematic()">Enter Website</button>
-            </div>
-
-            <div class="power-rankings">
-                <div class="character-card">
-                    <div class="char-name">Goku (Ultra Instinct)</div>
-                    <div class="char-power" style="color: var(--goku-ui);">99,999,999+</div>
-                </div>
-                <div class="character-card">
-                    <div class="char-name">Jiren (Full Power)</div>
-                    <div class="char-power" style="color: #e74c3c;">99,500,000</div>
-                </div>
-                <div class="character-card">
-                    <div class="char-name">Vegeta (UE / SSB)</div>
-                    <div class="char-power" style="color: var(--db-blue);">92,000,000</div>
-                </div>
-            </div>
-        </div>
+    <div id="intro-screen" onclick="enterBlog()">
+        <div class="intro-title">Shadow Blog</div>
+        <div class="intro-hint">(உள்ளே செல்ல திரையைத் தொடவும்)</div>
     </div>
 
     <div id="main-website">
+        
         <header>
-            <div class="logo">Shadow Blocks</div>
-            <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div class="logo">Shadow Blog</div>
+            </div>
+            <button class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
         </header>
 
-        <div class="sidebar-overlay" id="sidebar">
-            <span class="close-btn" onclick="toggleSidebar(false)">×</span>
-            <h3>Categories</h3>
-            <a href="#">🔥 Anime Updates</a>
-            <a href="#">🎮 Gaming News</a>
-            <a href="#">💻 Tech & Leaks</a>
-            <a href="#">🍿 Movies & Series</a>
-            <a href="#">🌍 Global Trends</a>
-            <hr style="border:0; border-top: 1px solid #12121c; margin: 40px 0;">
-            <a href="#" style="color: var(--db-orange); font-weight: bold;">🔒 Admin Access</a>
+        <div id="sidebar">
+            <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-fire"></i> ட்ரெண்டிங்</a></li>
+                <li><a href="#"><i class="fas fa-film"></i> திரைப்படங்கள்</a></li>
+                <li><a href="#"><i class="fas fa-mobile-alt"></i> தொழில்நுட்பம்</a></li>
+                <li><a href="#"><i class="fas fa-newspaper"></i> செய்திகள்</a></li>
+                <li><a href="#"><i class="fas fa-gamepad"></i> கேமிங்</a></li>
+            </ul>
         </div>
 
-        <div class="content-wrapper">
-            <div class="ads-container">
-                [ Google AdSense Banner Slot - Premium Placement ]
-            </div>
+        <div id="search-container">
+            <input type="text" placeholder="செய்திகளைத் தேடுங்கள்...">
+        </div>
 
-            <h2 style="font-size: 2rem; margin-bottom: 30px; letter-spacing: 1px;">Featured Editorial</h2>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <h3>The Architecture of Shadow Blocks</h3>
-                    <p>முழுமையான 3D துகள்கள் மற்றும் அனிமேஷன் தொழில்நுட்பத்துடன் கூடிய தளம் வெற்றிகரமாக வடிவமைக்கப்பட்டுள்ளது. அடுத்ததாக நாம் நிர்வாகி பக்கத்தை (Admin Panel) இணைக்கலாம்...</p>
-                </div>
-                <div class="blog-card">
-                    <h3>Godly Power Scaling Explored</h3>
-                    <p>டோர்னமென்ட் ஆஃப் பவர் அரங்கத்தின் 3D வடிவமைப்பு மற்றும் அதன் கேமரா சுழற்சிகள் பிரவுசரின் முடுக்கத்தைப் பயன்படுத்தி மிக நேர்த்தியாக இயங்குகின்றன...</p>
-                </div>
+        <div class="section-title">டிரெண்டிங் செய்திகள்</div>
+        <div class="trending-wrapper">
+            <div class="trending-card">
+                <img src="https://via.placeholder.com/200x120/222/fff?text=Trending+1" alt="Trend">
+                <p>லியோ படத்தின் புதிய அப்டேட் வெளியீடு!</p>
+            </div>
+            <div class="trending-card">
+                <img src="https://via.placeholder.com/200x120/222/fff?text=Trending+2" alt="Trend">
+                <p>புதிய ஐபோன் 15-ல் உள்ள முக்கிய அம்சங்கள்.</p>
+            </div>
+            <div class="trending-card">
+                <img src="https://via.placeholder.com/200x120/222/fff?text=Trending+3" alt="Trend">
+                <p>இன்றைய தங்கம் மற்றும் வெள்ளி நிலவரம்.</p>
             </div>
         </div>
+
+        <div class="ad-space">
+            [ கூகுள் AdSense விளம்பரத்திற்கான இடம் ]
+        </div>
+
+        <div class="section-title">சமீபத்திய பிளாக்ஸ்</div>
+        <div class="blog-feed">
+            
+            <div class="blog-box">
+                <div class="blog-image">
+                    <img src="https://via.placeholder.com/150/333/fff?text=Post+1" alt="Post">
+                </div>
+                <div class="blog-content">
+                    <h3>செயற்கை நுண்ணறிவு (AI) எதிர்காலத்தை எப்படி மாற்றப் போகிறது?</h3>
+                    <span class="time">2 மணி நேரத்திற்கு முன்</span>
+                </div>
+            </div>
+
+            <div class="blog-box">
+                <div class="blog-image">
+                    <img src="https://via.placeholder.com/150/333/fff?text=Post+2" alt="Post">
+                </div>
+                <div class="blog-content">
+                    <h3>தமிழ்நாட்டில் புதிய வேலைவாய்ப்பு திட்டங்கள் அறிமுகம்</h3>
+                    <span class="time">5 மணி நேரத்திற்கு முன்</span>
+                </div>
+            </div>
+
+            <div class="blog-box">
+                <div class="blog-image">
+                    <img src="https://via.placeholder.com/150/333/fff?text=Post+3" alt="Post">
+                </div>
+                <div class="blog-content">
+                    <h3>கம்மி விலையில் கிடைக்கும் டாப் 5 5G ஸ்மார்ட்போன்கள்</h3>
+                    <span class="time">நேற்று</span>
+                </div>
+            </div>
+
+            <div class="blog-box">
+                <div class="blog-image">
+                    <img src="https://via.placeholder.com/150/333/fff?text=Post+4" alt="Post">
+                </div>
+                <div class="blog-content">
+                    <h3>உலகக் கோப்பை கிரிக்கெட்: புள்ளிப்பட்டியலில் முதலிடத்தில் இந்தியா!</h3>
+                    <span class="time">நேற்று</span>
+                </div>
+            </div>
+            
+            <div class="blog-box">
+                <div class="blog-image">
+                    <img src="https://via.placeholder.com/150/333/fff?text=Post+5" alt="Post">
+                </div>
+                <div class="blog-content">
+                    <h3>புதிய ஹாலிவுட் வெப் சீரிஸ் விமர்சனம் - பார்க்கலாமா?</h3>
+                    <span class="time">2 நாட்களுக்கு முன்</span>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <script>
-        let scene, camera, renderer, controls;
-        let energyPillar, arenaRing, auraClouds, debrisField;
-        
-        function init3DEngine() {
-            const viewport = document.getElementById('canvas-3d-arena');
+        // 1. ஓப்பனிங் ஸ்க்ரீனில் இருந்து உள்ளே செல்வது
+        function enterBlog() {
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-website');
             
-            // Scene & Setup
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2('#020204', 0.08);
-
-            // Camera Setup
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 5, 12);
-
-            // WebGL Renderer
-            renderer = new THREE.WebGLRenderer({ canvas: viewport, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            // Orbit Camera Interaction (Allows user to look around like high-end websites)
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.maxPolarAngle = Math.PI / 2 - 0.05; // Don't clip below ground
-
-            // Lights Architecture
-            const ambientLight = new THREE.AmbientLight('#111122');
-            scene.add(ambientLight);
-
-            const pillarLight = new THREE.PointLight('#00A2FF', 5, 30);
-            pillarLight.position.set(0, 2, 0);
-            scene.add(pillarLight);
-
-            const explosiveLight = new THREE.PointLight('#FF5E00', 3, 20);
-            explosiveLight.position.set(0, -2, 0);
-            scene.add(explosiveLight);
-
-            // 1. CORE ARENA GENERATION (The Center Pillar of Tournament of Power)
-            const pillarGeo = new THREE.CylinderGeometry(0.8, 1.2, 8, 32, 1, true);
-            const pillarMat = new THREE.MeshBasicMaterial({
-                color: '#00A2FF',
-                wireframe: true,
-                transparent: true,
-                opacity: 0.4,
-                blending: THREE.AdditiveBlending
-            });
-            energyPillar = new THREE.Mesh(pillarGeo, pillarMat);
-            scene.add(energyPillar);
-
-            // 2. GROUND ARENA FLOATING RINGS
-            const ringGeo = new THREE.RingGeometry(3, 6, 64);
-            const ringMat = new THREE.MeshBasicMaterial({
-                color: '#221133',
-                side: THREE.DoubleSide,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.15
-            });
-            arenaRing = new THREE.Mesh(ringGeo, ringMat);
-            arenaRing.rotation.x = Math.PI / 2;
-            scene.add(arenaRing);
-
-            // 3. MASSIVE 3D SAIYAN AURA SYSTEM (1500 Particles)
-            const particleCount = 1800;
-            const auraGeometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(particleCount * 3);
-            const colors = new Float32Array(particleCount * 3);
-
-            const colorGoku = new THREE.Color('#00ffff');
-            const colorJiren = new THREE.Color('#FF5E00');
-
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                // Cyclical spiral generation around the pillar
-                let angle = Math.random() * Math.PI * 2;
-                let radius = 1.5 + Math.random() * 6;
-                
-                positions[i] = Math.cos(angle) * radius;
-                positions[i + 1] = (Math.random() - 0.5) * 10;
-                positions[i + 2] = Math.sin(angle) * radius;
-
-                // Alternate Aura Colors for fighters
-                let mixed = Math.random() > 0.5 ? colorGoku : colorJiren;
-                colors[i] = mixed.r;
-                colors[i + 1] = mixed.g;
-                colors[i + 2] = mixed.b;
-            }
-
-            auraGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            auraGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            const auraMaterial = new THREE.PointsMaterial({
-                size: 0.08,
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.7,
-                blending: THREE.AdditiveBlending
-            });
-
-            auraClouds = new THREE.Points(auraGeometry, auraMaterial);
-            scene.add(auraClouds);
-
-            // 4. FLOATING ARENA DEBRIS (Broken Rocks Effect)
-            const debrisCount = 60;
-            const debrisGeo = new THREE.DodecahedronGeometry(0.15, 0);
-            const debrisMat = new THREE.MeshLambertMaterial({ color: '#2c3e50', wireframe: false });
-            
-            debrisField = new THREE.Group();
-            for(let i=0; i<debrisCount; i++) {
-                let mesh = new THREE.Mesh(debrisGeo, debrisMat);
-                mesh.position.set(
-                    (Math.random() - 0.5) * 14,
-                    (Math.random() - 0.3) * 8,
-                    (Math.random() - 0.5) * 14
-                );
-                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-                debrisField.add(mesh);
-            }
-            scene.add(debrisField);
-
-            // Render loop initiation
-            animate3DScene();
-        }
-
-        // Realtime Rendering Calculations
-        function animate3DScene() {
-            requestAnimationFrame(animate3DScene);
-
-            // Rotations & Telemetry
-            energyPillar.rotation.y -= 0.01;
-            arenaRing.rotation.z += 0.002;
-            auraClouds.rotation.y += 0.004;
-
-            // Float debris objects up and down (Simulating gravitational energy)
-            debrisField.children.forEach((rock, idx) => {
-                rock.rotation.y += 0.01;
-                rock.position.y += Math.sin(Date.now() * 0.001 + idx) * 0.005;
-            });
-
-            // Energy wave pulse calculations inside the geometry array
-            const arr = auraClouds.geometry.attributes.position.array;
-            for(let i = 1; i < arr.length; i += 3) {
-                arr[i] += Math.sin(Date.now() * 0.003 + i) * 0.01; // Aura floating speed upward
-                if(arr[i] > 5) arr[i] = -5; // Reset position at bounds
-            }
-            auraClouds.geometry.attributes.position.needsUpdate = true;
-
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        // System Resize Manager
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // INTRO CONTROL SYSTEM
-        function exitCinematic() {
-            const viewport = document.getElementById('cinematic-viewport');
-            viewport.style.transform = 'translateY(-100vh)';
-            viewport.style.opacity = '0';
+            intro.style.opacity = '0';
             setTimeout(() => {
-                viewport.style.display = 'none';
-            }, 1800);
+                intro.style.visibility = 'hidden';
+                main.style.display = 'block';
+                // உள்ளே வந்ததும் Fade in ஆவதற்கு
+                setTimeout(() => {
+                    main.style.opacity = '1';
+                }, 50);
+            }, 800);
         }
 
-                // UI SIDEBAR NAVIGATION
-        function toggleSidebar(open) {
-            document.getElementById("sidebar").style.right = open ? "0" : "-320px";
+        // 2. சைட் பார் மெனுவை திறப்பது/மூடுவது
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.style.left === '0px') {
+                sidebar.style.left = '-280px';
+            } else {
+                sidebar.style.left = '0px';
+            }
         }
 
-        // Trigger on load
-        window.onload = init3DEngine;
+        // 3. சர்ச் பட்டனை தொட்டால் தேடல் பெட்டி வருவது
+        function toggleSearch() {
+            const searchContainer = document.getElementById('search-container');
+            if (searchContainer.style.display === 'block') {
+                searchContainer.style.display = 'none';
+            } else {
+                searchContainer.style.display = 'block';
+            }
+        }
     </script>
 </body>
-</html>
+    </html>
+    
