@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shadow Blog</title>
     <style>
-        /* 1. டார்க் தீம் டிசைன் */
+        /* டார்க் தீம் டிசைன் */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
@@ -24,7 +24,6 @@
             top: 0;
             z-index: 2;
         }
-        /* 2. மூன்று கோடு மெனு பட்டன் */
         .menu-btn {
             background: none;
             border: none;
@@ -46,7 +45,7 @@
             padding: 0 15px; 
         }
 
-        /* 3. சைட் பார் (Sidebar) - கேட்டகிரிகள் மற்றும் அட்மின் */
+        /* சைட் பார் (Sidebar) */
         .sidebar {
             height: 100%;
             width: 0;
@@ -81,7 +80,7 @@
             cursor: pointer;
         }
 
-        /* 4. Google AdSense விளம்பர இடம் */
+        /* Google AdSense இடம் */
         .adsense-space {
             background-color: #1f1f1f;
             border: 1px dashed #444;
@@ -93,13 +92,13 @@
             font-size: 14px;
         }
 
-        /* 5. அட்மின் பாஸ்வேர்ட் & போஸ்ட் போடும் இடம் */
+        /* அட்மின் பகுதி */
         .admin-section {
             background-color: #1f1f1f;
             padding: 25px;
             border-radius: 10px;
             margin-bottom: 30px;
-            display: none; /* ஆரம்பத்தில் மறைக்கப்பட்டிருக்கும் */
+            display: none; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .admin-section h3 { margin-top: 0; color: #007bff; }
@@ -126,7 +125,7 @@
         }
         .admin-section button:hover { background-color: #0056b3; }
 
-        /* 6. முகப்புப் பக்கம் (Blog Feed) */
+        /* முகப்புப் பக்கம் (Blog Cards) */
         .blog-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
@@ -156,25 +155,31 @@
             color: #eee; 
         }
 
-        /* 7. விரிவாகப் படிக்கும் பக்கம் (Detail View) */
+        /* விரிவாகப் படிக்கும் பக்கம் (Detail View) */
         .detail-view { 
-            display: none; /* ஆரம்பத்தில் மறைக்கப்பட்டிருக்கும் */
+            display: none; 
             background: #1f1f1f; 
             padding: 25px; 
             border-radius: 10px; 
             border: 1px solid #2a2a2a;
         }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         .back-btn { 
-            background-color: #333; 
-            color: #fff; 
-            padding: 10px 15px; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            margin-bottom: 20px; 
-            font-size: 14px;
+            background-color: #333; color: #fff; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;
         }
         .back-btn:hover { background-color: #444; }
+        
+        /* Edit & Delete Buttons */
+        .edit-btn { background-color: #ffc107; color: #000; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 10px; }
+        .edit-btn:hover { background-color: #e0a800; }
+        .delete-btn { background-color: #dc3545; color: #fff; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .delete-btn:hover { background-color: #c82333; }
+
         .detail-view img { 
             width: 100%; 
             max-height: 400px; 
@@ -208,7 +213,7 @@
     <div class="container">
         
         <div class="adsense-space" id="ads-section">
-            [ Google AdSense விளம்பரங்களுக்கான இடம் (Ad Script Here) ]
+            [ Google AdSense விளம்பரங்களுக்கான இடம் ]
         </div>
 
         <div id="login-form" class="admin-section">
@@ -220,21 +225,26 @@
         </div>
 
         <div id="admin-panel" class="admin-section">
-            <h3>புதிய போஸ்ட்டை உருவாக்கவும்</h3>
+            <h3 id="admin-title">புதிய போஸ்ட்டை உருவாக்கவும்</h3>
             <input type="text" id="post-title" placeholder="தலைப்பு (Title)">
             <input type="text" id="post-image" placeholder="படத்தின் லிங்க் (Image URL)">
             <textarea id="post-content" rows="8" placeholder="முழுமையான செய்தி அல்லது கட்டுரை..."></textarea>
-            <button onclick="addPost()">Publish Post</button>
+            <button id="publish-btn" onclick="addPost()">Publish Post</button>
             <button onclick="goHome()" style="background-color:#444; margin-left:10px;">Close</button>
         </div>
 
         <div id="main-page">
-            <div id="blog-list" class="blog-grid">
-                </div>
+            <div id="blog-list" class="blog-grid"></div>
         </div>
 
         <div id="detail-page" class="detail-view">
-            <button class="back-btn" onclick="goBack()">🔙 மீண்டும் முகப்புக்கு</button>
+            <div class="top-bar">
+                <button class="back-btn" onclick="goBack()">🔙 மீண்டும் முகப்புக்கு</button>
+                <div>
+                    <button class="edit-btn" onclick="requestAdmin('edit')">✏️ Edit</button>
+                    <button class="delete-btn" onclick="requestAdmin('delete')">🗑️ Delete</button>
+                </div>
+            </div>
             <img id="detail-image" src="" alt="Blog Image">
             <h2 id="detail-title"></h2>
             <p id="detail-content"></p>
@@ -243,51 +253,48 @@
     </div>
 
     <script>
-        // மெனுவை திறக்க / மூட
+        let posts = JSON.parse(localStorage.getItem('shadow_blog_posts')) || [];
+        let currentIndex = -1; // எடிட் மற்றும் டெலீட் செய்ய உதவும் வேரியபிள்
+        let editMode = false;
+
         function openNav() { document.getElementById("mySidebar").style.width = "250px"; }
         function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
 
-        // அனைத்து பேனல்களையும் மறைக்கும் பொதுவான ஃபங்ஷன்
         function hideAllSections() {
             document.getElementById("login-form").style.display = "none";
             document.getElementById("admin-panel").style.display = "none";
             document.getElementById("main-page").style.display = "none";
             document.getElementById("detail-page").style.display = "none";
-            document.getElementById("ads-section").style.display = "block"; // விளம்பரம் எப்போதும் முகப்பில் தெரிய
+            document.getElementById("ads-section").style.display = "block"; 
         }
 
-        // முகப்புப் பக்கத்திற்குச் செல்ல (Home)
         function goHome() {
             closeNav();
             hideAllSections();
             document.getElementById("main-page").style.display = "block";
+            editMode = false; // முகப்புக்கு வரும்போது எடிட் மோடை கேன்சல் செய்துவிட வேண்டும்
+            resetAdminPanel();
             renderPosts();
         }
 
-        // அட்மின் லாகின் பக்கத்தை திறக்க
         function openAdminLogin() {
             closeNav();
             hideAllSections();
-            document.getElementById("ads-section").style.display = "none"; // லாகின் செய்யும் போது விளம்பரம் வேண்டாம்
+            document.getElementById("ads-section").style.display = "none"; 
             document.getElementById("login-form").style.display = "block";
         }
 
-        // பாஸ்வேர்ட் சரிபார்க்க (பாஸ்வேர்ட்: shadow)
         function checkPassword() {
             const pass = document.getElementById("admin-pass").value;
             if (pass === "shadow") { 
                 document.getElementById("login-form").style.display = "none";
                 document.getElementById("admin-panel").style.display = "block";
-                document.getElementById("admin-pass").value = ""; // பாஸ்வேர்டை க்ளியர் செய்ய
+                document.getElementById("admin-pass").value = ""; 
             } else {
-                alert("தவறான பாஸ்வேர்ட்! (Hint: shadow)");
+                alert("தவறான பாஸ்வேர்ட்!");
             }
         }
 
-        // போஸ்ட்களை லோக்கல் ஸ்டோரேஜில் இருந்து எடுக்க
-        let posts = JSON.parse(localStorage.getItem('shadow_blog_posts')) || [];
-
-        // போஸ்ட்களை முகப்பில் காட்ட
         function renderPosts() {
             const blogList = document.getElementById('blog-list');
             blogList.innerHTML = '';
@@ -301,38 +308,13 @@
                 const card = document.createElement('div');
                 card.className = 'blog-card';
                 card.onclick = () => showDetail(index);
-                card.innerHTML = `
-                    <img src="${post.image}" alt="${post.title}">
-                    <h3>${post.title}</h3>
-                `;
+                card.innerHTML = `<img src="${post.image}" alt="${post.title}"><h3>${post.title}</h3>`;
                 blogList.appendChild(card);
             });
         }
 
-        // புதிய போஸ்ட்டை சேமிக்க
-        function addPost() {
-            const title = document.getElementById('post-title').value;
-            const image = document.getElementById('post-image').value;
-            const content = document.getElementById('post-content').value;
-
-            if (title && image && content) {
-                posts.unshift({ title, image, content }); // முதலில் சேர்க்க
-                localStorage.setItem('shadow_blog_posts', JSON.stringify(posts));
-                
-                // பெட்டிகளை காலி செய்ய
-                document.getElementById('post-title').value = '';
-                document.getElementById('post-image').value = '';
-                document.getElementById('post-content').value = '';
-                
-                alert("பதிவு வெற்றிகரமாக சேர்க்கப்பட்டது!");
-                goHome(); // முகப்புக்குச் செல்ல
-            } else {
-                alert("தயவுசெய்து தலைப்பு, படம் மற்றும் செய்தியை நிரப்பவும்!");
-            }
-        }
-
-        // போஸ்ட்டை விரிவாகப் படிக்கத் தனிப் பக்கத்தைத் திறக்க
         function showDetail(index) {
+            currentIndex = index; // எந்த போஸ்ட் ஓப்பனில் இருக்கிறது என்பதை சேமிக்க
             const post = posts[index];
             
             document.getElementById('detail-title').innerText = post.title;
@@ -340,19 +322,93 @@
             document.getElementById('detail-content').innerText = post.content || 'இந்த பதிவுக்கு முழுமையான செய்தி இல்லை.'; 
 
             hideAllSections();
-            document.getElementById("ads-section").style.display = "none"; // படிக்கும் போது விளம்பரம் வேண்டாம் என்றால் இதை வைக்கலாம்
+            document.getElementById("ads-section").style.display = "none"; 
             document.getElementById('detail-page').style.display = 'block';
             window.scrollTo(0, 0);
         }
 
-        // படிக்கும் பக்கத்திலிருந்து மீண்டும் முகப்புக்குச் செல்ல
+        // Edit அல்லது Delete பட்டனை அழுத்தினால் பாஸ்வேர்ட் கேட்கும் ஃபங்ஷன்
+        function requestAdmin(action) {
+            const pass = prompt("பாதுகாப்பு: அட்மின் பாஸ்வேர்டை உள்ளிடவும் (Password: shadow):");
+            if(pass === "shadow") {
+                if(action === 'delete') {
+                    deletePost();
+                } else if(action === 'edit') {
+                    openEditMode();
+                }
+            } else if(pass !== null) {
+                alert("தவறான பாஸ்வேர்ட்! உங்களால் இதை மாற்ற முடியாது.");
+            }
+        }
+
+        // டெலீட் செய்யும் ஃபங்ஷன்
+        function deletePost() {
+            if(confirm("இந்த பதிவை உறுதியாக அழிக்க விரும்புகிறீர்களா? அழித்தால் திரும்பப் பெற முடியாது!")) {
+                posts.splice(currentIndex, 1); // குறிப்பிட்ட பதிவை மட்டும் அழிக்கும்
+                localStorage.setItem('shadow_blog_posts', JSON.stringify(posts));
+                alert("பதிவு வெற்றிகரமாக அழிக்கப்பட்டது!");
+                goHome();
+            }
+        }
+
+        // எடிட் மோடை ஓபன் செய்யும் ஃபங்ஷன்
+        function openEditMode() {
+            editMode = true;
+            const post = posts[currentIndex];
+            
+            // பழைய தகவல்களை பெட்டியில் நிரப்புவது
+            document.getElementById('post-title').value = post.title;
+            document.getElementById('post-image').value = post.image;
+            document.getElementById('post-content').value = post.content;
+            
+            // டைட்டில் மற்றும் பட்டன் பெயரை மாற்றுவது
+            document.getElementById('admin-title').innerText = "பதிவை திருத்துக (Edit Post)";
+            document.getElementById('publish-btn').innerText = "Update Post";
+
+            hideAllSections();
+            document.getElementById("ads-section").style.display = "none"; 
+            document.getElementById("admin-panel").style.display = "block";
+        }
+
+        // போஸ்ட்டை சேமிக்கும் ஃபங்ஷன் (புதியது மற்றும் எடிட் இரண்டிற்கும்)
+        function addPost() {
+            const title = document.getElementById('post-title').value;
+            const image = document.getElementById('post-image').value;
+            const content = document.getElementById('post-content').value;
+
+            if (title && image && content) {
+                if(editMode) {
+                    // எடிட் செய்தால் அதே இடத்தில் அப்டேட் ஆகும்
+                    posts[currentIndex] = { title, image, content };
+                    alert("பதிவு வெற்றிகரமாக திருத்தப்பட்டது!");
+                } else {
+                    // புதிதாக போட்டால் முதலில் சேரும்
+                    posts.unshift({ title, image, content }); 
+                    alert("பதிவு வெற்றிகரமாக சேர்க்கப்பட்டது!");
+                }
+
+                localStorage.setItem('shadow_blog_posts', JSON.stringify(posts));
+                goHome(); 
+            } else {
+                alert("தயவுசெய்து தலைப்பு, படம் மற்றும் செய்தியை நிரப்பவும்!");
+            }
+        }
+
+        // அட்மின் பேனலை பழையபடி மாற்றுவதற்கான ஃபங்ஷன்
+        function resetAdminPanel() {
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-image').value = '';
+            document.getElementById('post-content').value = '';
+            document.getElementById('admin-title').innerText = "புதிய போஸ்ட்டை உருவாக்கவும்";
+            document.getElementById('publish-btn').innerText = "Publish Post";
+        }
+
         function goBack() {
             goHome();
         }
 
-        // வெப்சைட் திறந்தவுடன் போஸ்ட்களைக் காட்ட
         goHome();
     </script>
 </body>
-    </html>
+                </html>
     
